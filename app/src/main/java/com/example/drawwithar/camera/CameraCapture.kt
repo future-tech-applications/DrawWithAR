@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import com.example.drawwithar.Permission
+import com.example.drawwithar.util.Permission
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import java.io.File
 import kotlinx.coroutines.ExperimentalCoroutinesApi

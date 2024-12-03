@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.drawwithar.EMPTY_IMAGE_URI
-import com.example.drawwithar.Permission
+import com.example.drawwithar.util.Permission
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 @ExperimentalPermissionsApi

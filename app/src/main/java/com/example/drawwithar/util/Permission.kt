@@ -1,4 +1,4 @@
-package com.example.drawwithar
+package com.example.drawwithar.util
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
