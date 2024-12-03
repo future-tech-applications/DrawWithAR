@@ -18,7 +18,6 @@ import androidx.core.net.toUri
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import com.example.drawwithar.camera.CameraCapture
-import com.example.drawwithar.camera.CameraPreview
 import com.example.drawwithar.gallery.GallerySelect
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,12 +26,17 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @ExperimentalPermissionsApi
 @Composable
-fun PermissionScreen(modifier: Modifier = Modifier) {
+fun MainScreen(modifier: Modifier = Modifier) {
     var imageUri by remember { mutableStateOf(EMPTY_IMAGE_URI) }
-    var cameraPreview by remember { mutableStateOf(false) }
+    var isStartDrawing by remember { mutableStateOf(false) }
     if (imageUri != EMPTY_IMAGE_URI) {
         Box(modifier = modifier) {
-            if(cameraPreview) CameraCapture()
+            // when AR enabled to start drawing
+
+            // 1 => Camera Preview => to preview camera
+            if(isStartDrawing) CameraCapture()
+
+            // 2 => Opened Image => to show image
             Image(
                 modifier = Modifier.fillMaxSize(),
                 painter = rememberAsyncImagePainter(imageUri),
@@ -40,18 +44,20 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
                 alpha = 0.2f // change alpha for transparency
             )
 
-
+            // Enable AR and start Drawing button
             Button(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 onClick = {
                     //imageUri = EMPTY_IMAGE_URI
-                    cameraPreview = true
+                    isStartDrawing = true
                 }
             ) {
                 Text("Start Drawing")
             }
         }
-    } else {
+    }
+    // to get image from gallery
+    else {
         var showGallerySelect by remember { mutableStateOf(false) }
         if (showGallerySelect) {
             GallerySelect(
@@ -62,6 +68,8 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
                 }
             )
         } else {
+
+            // Camera Preview
             Box(modifier = modifier) {
                 CameraCapture(
                     modifier = modifier,

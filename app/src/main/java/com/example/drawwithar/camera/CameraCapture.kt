@@ -46,6 +46,8 @@ fun CameraCapture(
     onImageFile: (File) -> Unit = { }
 ) {
     val context = LocalContext.current
+
+    // Ask for Camera permissions
     Permission(
         permission = Manifest.permission.CAMERA,
         rationale = "You said you wanted a picture, so I'm going to have to ask for permission.",
