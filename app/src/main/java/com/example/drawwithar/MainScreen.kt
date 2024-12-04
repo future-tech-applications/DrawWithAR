@@ -29,14 +29,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun MainScreen(modifier: Modifier = Modifier) {
     var imageUri by remember { mutableStateOf(EMPTY_IMAGE_URI) }
     var isStartDrawing by remember { mutableStateOf(false) }
+
     if (imageUri != EMPTY_IMAGE_URI) {
         Box(modifier = modifier) {
-            // when AR enabled to start drawing
+            // when AR enabled to start drawing //
 
-            // 1 => Camera Preview => to preview camera
-            if(isStartDrawing) CameraCapture()
+            // 1 => Camera Preview to open live camera
+            if(isStartDrawing) CameraCapture(isDrawing = isStartDrawing)
 
-            // 2 => Opened Image => to show image
+            // 2 => Open and Overlay Image to Draw
             Image(
                 modifier = Modifier.fillMaxSize(),
                 painter = rememberAsyncImagePainter(imageUri),
@@ -44,19 +45,21 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 alpha = 0.2f // change alpha for transparency
             )
 
-            // Enable AR and start Drawing button
+            // Button to Enable AR and start Drawing button
             Button(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 onClick = {
-                    //imageUri = EMPTY_IMAGE_URI
-                    isStartDrawing = true
+                    imageUri = if(isStartDrawing) EMPTY_IMAGE_URI else imageUri
+                    isStartDrawing = !isStartDrawing
                 }
             ) {
-                Text("Start Drawing")
+                val text = if(isStartDrawing ) "Reset" else "Start Drawing"
+                Text(text)
             }
         }
     }
-    // to get image from gallery
+
+    // to get image from gallery //
     else {
         var showGallerySelect by remember { mutableStateOf(false) }
         if (showGallerySelect) {

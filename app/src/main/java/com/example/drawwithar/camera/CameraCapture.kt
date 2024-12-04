@@ -43,7 +43,8 @@ import kotlinx.coroutines.launch
 fun CameraCapture(
     modifier: Modifier = Modifier,
     cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
-    onImageFile: (File) -> Unit = { }
+    onImageFile: (File) -> Unit = { },
+    isDrawing: Boolean = false
 ) {
     val context = LocalContext.current
 
@@ -87,17 +88,22 @@ fun CameraCapture(
                         previewUseCase = it
                     }
                 )
-                CapturePictureButton(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(16.dp)
-                        .align(Alignment.BottomCenter),
-                    onClick = {
-                        coroutineScope.launch {
-                            onImageFile(imageCaptureUseCase.takePicture(context.executor))
+
+                // Show capture button only if camera is not drawing
+                if(!isDrawing) {
+                    CapturePictureButton(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(16.dp)
+                            .align(Alignment.BottomCenter),
+                        onClick = {
+                            coroutineScope.launch {
+                                onImageFile(imageCaptureUseCase.takePicture(context.executor))
+                            }
                         }
-                    }
-                )
+                    )
+                }
+
             }
             LaunchedEffect(previewUseCase) {
                 val cameraProvider = context.getCameraProvider()
