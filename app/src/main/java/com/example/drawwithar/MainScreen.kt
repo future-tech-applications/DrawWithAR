@@ -5,10 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,12 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import coil.annotation.ExperimentalCoilApi
@@ -51,16 +45,19 @@ fun MainScreen(modifier: Modifier = Modifier) {
     var alphaValue by remember { mutableFloatStateOf(0.5f) }
 
     var scale by remember { mutableFloatStateOf(1f) }
+    var rotation by remember { mutableFloatStateOf(0f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
-    val density = LocalDensity.current
-    val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
-    val screenHeightDp = LocalConfiguration.current.screenHeightDp.dp
-
-
-
-
+    // Gesture detection
+    val gestureModifier = Modifier.pointerInput(Unit) {
+        detectTransformGestures { _, pan, zoom, rotate ->
+            scale = (scale * zoom).coerceIn(0.5f, 4f) // Limits: 0.5x (zoom out) to 4x (zoom in)
+            rotation += rotate
+            offsetX += pan.x
+            offsetY += pan.y
+        }
+    }
 
     if (imageUri != EMPTY_IMAGE_URI) {
         Box(modifier = modifier) {
@@ -79,21 +76,22 @@ fun MainScreen(modifier: Modifier = Modifier) {
             ) {
                 Image(
                     modifier = Modifier
+                        .fillMaxWidth()
+                        .then(gestureModifier)
                         .scale(scale)
                         .offset(
                             x = offsetX.dp,
                             y = offsetY.dp
                         )
+                        .graphicsLayer(
+                            scaleX = scale,
+                            scaleY = scale,
+                            rotationZ = rotation,
+                            translationX = offsetX,
+                            translationY = offsetY
+                        )
                         .border(1.dp, Color.White)
-                        .pointerInput(Unit) {
-                            detectTransformGestures { _, pan, zoom, _ ->
-                                offsetX += pan.x
-                                offsetY += pan.y
-                                scale *= zoom.coerceIn(1f, 5f)
-                            }
-                        }
                         .clip(RoundedCornerShape(8.dp))
-                        .fillMaxWidth()
                     ,
                     painter = rememberAsyncImagePainter(imageUri),
                     contentDescription = "Captured image",
@@ -172,9 +170,3 @@ fun MainScreen(modifier: Modifier = Modifier) {
         }
     }
 }
-
-
-//.offset(
-//x = offsetX.coerceIn(-density.run { screenWidthDp.toPx() } * (scale - 1) / 2, density.run { screenWidthDp.toPx() } * (scale - 1) / 2).dp,
-//y = offsetY.coerceIn(-density.run { screenHeightDp.toPx() } * (scale - 1) / 2, density.run { screenHeightDp.toPx() } * (scale - 1) / 2).dp
-//)
