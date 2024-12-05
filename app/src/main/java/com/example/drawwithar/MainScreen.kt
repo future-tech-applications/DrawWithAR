@@ -49,13 +49,17 @@ fun MainScreen(modifier: Modifier = Modifier) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
+    val dragDamping = 0.5f // Damping factor for smoother dragging
+
     // Gesture detection
     val gestureModifier = Modifier.pointerInput(Unit) {
         detectTransformGestures { _, pan, zoom, rotate ->
             scale = (scale * zoom).coerceIn(0.5f, 4f) // Limits: 0.5x (zoom out) to 4x (zoom in)
             rotation += rotate
-            offsetX += pan.x
-            offsetY += pan.y
+
+            // Apply damping to pan (dragging)
+            offsetX = (offsetX + pan.x * dragDamping).coerceIn(-500f, 500f) // Adjust max bounds
+            offsetY = (offsetY + pan.y * dragDamping).coerceIn(-500f, 500f)
         }
     }
 
@@ -77,7 +81,6 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .then(gestureModifier)
                         .scale(scale)
                         .offset(
                             x = offsetX.dp,
@@ -92,6 +95,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         )
                         .border(1.dp, Color.White)
                         .clip(RoundedCornerShape(8.dp))
+                        .then(gestureModifier)
                     ,
                     painter = rememberAsyncImagePainter(imageUri),
                     contentDescription = "Captured image",
