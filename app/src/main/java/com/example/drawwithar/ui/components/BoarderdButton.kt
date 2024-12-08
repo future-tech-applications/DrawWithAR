@@ -38,7 +38,7 @@ fun BorderedButton(
                 color = borderColor,
                 shape = borderShape
             )
-            .width(90.dp)
+            .width(100.dp)
             .height(35.dp)
         ,
         shape = borderShape,

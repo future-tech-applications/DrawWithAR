@@ -13,45 +13,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import com.example.drawwithar.R
 
 @OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun CustomTopAppBar(title:String, onBackPresses: () -> Unit, isShowBackBtn:Boolean = true,
-//                    actions: @Composable RowScope.() -> Unit = {}, isShowMenuBtn:Boolean = false ) {
-//    TopAppBar(
-//        colors = topAppBarColors(
-//            containerColor = MaterialTheme.colorScheme.primary,
-//            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-//        ),
-//        title = {
-//            Row {
-//                Text(title)
-//            }
-//        },
-//        navigationIcon = {
-//            if(isShowBackBtn) {
-//                IconButton(onClick = { onBackPresses() }) {
-//                    Icon(
-//                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-//                        tint = MaterialTheme.colorScheme.onPrimary,
-//                        contentDescription = "Back"
-//                    )
-//                }
-//            }
-//            if(isShowMenuBtn){
-//                IconButton(onClick = { onBackPresses() }) {
-//                    Icon(
-//                        imageVector = Icons.Rounded.Menu,
-//                        tint = MaterialTheme.colorScheme.onPrimary,
-//                        contentDescription = "Navigation Drawer"
-//                    )
-//                }
-//            }
-//        },
-//        actions = actions
-//    )
-//}
-
 @Composable
 fun CustomTopAppBar(
     title:String, onBackPresses: () -> Unit,
@@ -65,13 +30,19 @@ fun CustomTopAppBar(
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         title = {Row {
-            Text(title)
+            Text(
+                text = title,
+                fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
+                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                color = MaterialTheme.colorScheme.onPrimary,
+
+            )
         }},
         navigationIcon = {
             if(isShowBackBtn) {
                 IconButton(onClick = { onBackPresses() }) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        painter = painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
                         tint = MaterialTheme.colorScheme.onPrimary,
                         contentDescription = "Back"
                     )

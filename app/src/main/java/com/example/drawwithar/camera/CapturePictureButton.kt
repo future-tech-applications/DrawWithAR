@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -29,14 +30,16 @@ fun CapturePictureButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    val color = if (isPressed) Color.Blue else Color.Black
+    val color = if (isPressed) MaterialTheme.colorScheme.tertiary else Color.Transparent
     val contentPadding = PaddingValues(if (isPressed) 8.dp else 12.dp)
     OutlinedButton(
         modifier = modifier,
         shape = CircleShape,
-        border = BorderStroke(2.dp, Color.Black),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
         contentPadding = contentPadding,
-        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = MaterialTheme.colorScheme.tertiary
+        ),
         onClick = { /* GNDN */ },
         enabled = false
     ) {

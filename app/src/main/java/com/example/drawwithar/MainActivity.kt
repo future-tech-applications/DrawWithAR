@@ -13,7 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.core.graphics.toColor
 import coil.annotation.ExperimentalCoilApi
-import com.example.drawwithar.ui.theme.DrawWithARTheme
+import com.example.compose.DrawWithARTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
