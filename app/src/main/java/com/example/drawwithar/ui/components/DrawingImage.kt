@@ -52,7 +52,6 @@ fun DrawingImage(
         }
     }
 
-
     Column(modifier = modifier) {
         Image(
             modifier = Modifier

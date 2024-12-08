@@ -35,6 +35,7 @@ import com.example.drawwithar.camera.CameraCapture
 import com.example.drawwithar.gallery.GallerySelect
 import com.example.drawwithar.ui.components.BorderedButton
 import com.example.drawwithar.ui.components.CustomTopAppBar
+import com.example.drawwithar.ui.components.DrawingControls
 import com.example.drawwithar.ui.components.DrawingImage
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,10 +47,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun MainScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val view = LocalView.current
+
     var imageUri by rememberSaveable { mutableStateOf(EMPTY_IMAGE_URI) }
     var isStartDrawing by rememberSaveable { mutableStateOf(false) }
     var alphaValue by rememberSaveable { mutableFloatStateOf(0.5f) }
-
 
     // Hide system bars
     LaunchedEffect(Unit) {
@@ -75,6 +76,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 onBackPresses = {  },
                 isShowBackBtn = true,
                 actions = {
+                    // => Button to Finish Drawing
                     if(isStartDrawing) {
                         BorderedButton(
                             modifier = Modifier.padding(8.dp),
@@ -85,20 +87,16 @@ fun MainScreen(modifier: Modifier = Modifier) {
                             }
                         )
                     }
-
                 }
             )
         },
+        // Main content of the screen
         content = { innerPadding ->
-            // Main content of the screen
-
             if (imageUri != EMPTY_IMAGE_URI) {
                 Box(modifier = modifier
                     .padding(innerPadding)
                     .background(color = MaterialTheme.colorScheme.surfaceContainer)
                 ) {
-                    // when AR enabled to start drawing //
-
                     // 1 => Camera Preview to open live camera
                     if(isStartDrawing) CameraCapture(isDrawing = isStartDrawing)
 
@@ -112,48 +110,30 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         alpha = alphaValue
                     )
 
-                    // 3 => Controls to change alpha and other options
-                    Column(
+                    // 3 => Bottom Controls
+                    DrawingControls(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
                             .align(Alignment.BottomCenter)
                         ,
-                    ) {
-                        Slider(
-                            value = alphaValue,
-                            onValueChange = { alphaValue = it },
-                            valueRange = 0.1f..1.0f,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        )
-
-                        // Button to Enable AR and start Drawing button
-                        if(!isStartDrawing) {
-                            Button(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 16.dp)
-                                ,
-                                onClick = {
-                                    imageUri = if(isStartDrawing) EMPTY_IMAGE_URI else imageUri
-                                    isStartDrawing = !isStartDrawing
-                                }
-                            ) {
-                                val text = "Start Drawing"
-                                Text(text)
-                            }
+                        alpha = alphaValue,
+                        isStartDrawing = isStartDrawing,
+                        onStartDrawing = {
+                            imageUri = if(isStartDrawing) EMPTY_IMAGE_URI else imageUri
+                            isStartDrawing = !isStartDrawing
+                        },
+                        onAlphaChange = {
+                            alphaValue = it
                         }
-
-                    }
-
+                    )
                 }
             }
 
             // to get image from gallery //
             else {
                 var showGallerySelect by rememberSaveable { mutableStateOf(false) }
+                // Open Gallery
                 if (showGallerySelect) {
                     GallerySelect(
                         modifier = Modifier,
@@ -163,9 +143,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         }
                     )
                 } else {
-
-                    // Camera Preview
                     Box(modifier = modifier.padding(innerPadding)) {
+                        // Open Camera
                         CameraCapture(
                             modifier = modifier,
                             onImageFile = { file ->
@@ -187,7 +166,6 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 }
             }
         }
-
     )
 
 }
