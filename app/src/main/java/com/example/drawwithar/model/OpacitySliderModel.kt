@@ -1,0 +1,8 @@
+package com.example.drawwithar.model
+
+data class OpacitySliderModel (
+    val alpha: Float = 0.5f,
+    val isStartDrawing: Boolean = false,
+    val onStartDrawing: () -> Unit = {},
+    val onAlphaChange: (Float) -> Unit = {}
+)

@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,9 +21,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import com.example.drawwithar.R
+import com.example.drawwithar.model.OpacitySliderModel
 
 data class BottomBarItem(
     val icon: @Composable (isSelected: Boolean) -> Unit,
@@ -32,11 +31,14 @@ data class BottomBarItem(
 )
 
 @Composable
-fun CustomBottomBar(
+fun DrawingControlBottomBar(
     items: List<BottomBarItem>,
     modifier: Modifier = Modifier,
     initiallyVisible: Boolean = true,
-    onItemSelected: (Int) -> Unit
+    onItemSelected: (Int) -> Unit,
+    isOpacitySliderVisible: Boolean = false,
+    opacitySliderModel: OpacitySliderModel = OpacitySliderModel()
+
 ) {
     var selectedItemIndex by remember { mutableIntStateOf(0) }
     var isBarVisible by remember { mutableStateOf(initiallyVisible) }
@@ -45,6 +47,7 @@ fun CustomBottomBar(
         modifier = modifier
             .fillMaxWidth()
     ) {
+
         // Tip-Top Handler
         TipTopHandler(
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -57,22 +60,33 @@ fun CustomBottomBar(
             enter = androidx.compose.animation.fadeIn(animationSpec = tween(300)),
             exit = androidx.compose.animation.fadeOut(animationSpec = tween(300))
         ) {
-            Row(
-                modifier = Modifier
+            Column(
+                modifier = modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                items.forEachIndexed { index, item ->
-                    BottomBarItem(
-                        item = item,
-                        isSelected = selectedItemIndex == index,
-                        onClick = {
-                            selectedItemIndex = index
-                            onItemSelected(index)
-                        }
-                    )
+                // Slider
+                OpacitySliderControl(
+                    modifier = modifier.padding(8.dp),
+                    opacitySliderModel = opacitySliderModel,
+                    isSliderVisible = isOpacitySliderVisible
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    items.forEachIndexed { index, item ->
+                        BottomBarItem(
+                            item = item,
+                            isSelected = selectedItemIndex == index,
+                            onClick = {
+                                selectedItemIndex = index
+                                onItemSelected(index)
+                            }
+                        )
+                    }
                 }
             }
         }

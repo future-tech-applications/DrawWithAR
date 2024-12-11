@@ -2,21 +2,11 @@ package com.example.drawwithar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -29,10 +19,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
@@ -41,11 +29,10 @@ import androidx.core.view.WindowInsetsControllerCompat
 import coil.annotation.ExperimentalCoilApi
 import com.example.drawwithar.camera.CameraCapture
 import com.example.drawwithar.gallery.GallerySelect
+import com.example.drawwithar.model.OpacitySliderModel
 import com.example.drawwithar.ui.components.BorderedButton
-import com.example.drawwithar.ui.components.BottomBarItem
-import com.example.drawwithar.ui.components.CustomBottomBar
+import com.example.drawwithar.ui.components.DrawingControlBottomBar
 import com.example.drawwithar.ui.components.CustomTopAppBar
-import com.example.drawwithar.ui.components.DrawingControls
 import com.example.drawwithar.ui.components.DrawingImage
 import com.example.drawwithar.ui.components.getListOfControlItems
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -64,6 +51,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     var alphaValue by rememberSaveable { mutableFloatStateOf(0.5f) }
 
     var selectedTab by remember { mutableStateOf(0) }
+    var isOpacitySliderVisible by remember { mutableStateOf(false) }
 
 
 
@@ -127,31 +115,32 @@ fun MainScreen(modifier: Modifier = Modifier) {
 
                     // 3 => Bottom Controls
                     val controlItems = getListOfControlItems()
-                    CustomBottomBar(
+                    DrawingControlBottomBar(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        isOpacitySliderVisible = isOpacitySliderVisible,
+                        opacitySliderModel = OpacitySliderModel(
+                            alpha = alphaValue,
+                            isStartDrawing = isStartDrawing,
+                            onStartDrawing = {
+                                imageUri = if(isStartDrawing) EMPTY_IMAGE_URI else imageUri
+                                isStartDrawing = !isStartDrawing
+                            },
+                            onAlphaChange = {
+                                alphaValue = it
+                            }
+                        ),
                         items = controlItems,
-                        onItemSelected = { selectedTab = it },
-                        modifier = Modifier.align(Alignment.BottomCenter)
+                        onItemSelected = { selectedTab = it
+                            when(selectedTab) {
+                                0 -> {
+                                    isOpacitySliderVisible = true
+                                }
+
+                            }
+                                         },
+
                     )
 
-
-                    /**
-                    DrawingControls(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .align(Alignment.BottomCenter)
-                        ,
-                        alpha = alphaValue,
-                        isStartDrawing = isStartDrawing,
-                        onStartDrawing = {
-                            imageUri = if(isStartDrawing) EMPTY_IMAGE_URI else imageUri
-                            isStartDrawing = !isStartDrawing
-                        },
-                        onAlphaChange = {
-                            alphaValue = it
-                        }
-                    )
-                    **/
                 }
             }
 

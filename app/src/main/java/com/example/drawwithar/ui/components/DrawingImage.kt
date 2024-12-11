@@ -68,8 +68,8 @@ fun DrawingImage(
                     translationX = offsetX,
                     translationY = offsetY
                 )
-                .clip(RoundedCornerShape(16.dp))
-                .border(1.dp, Color.White, RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(8.dp))
+                .border(1.dp, Color.White, RoundedCornerShape(8.dp))
                 .then(gestureModifier)
             ,
             painter = rememberAsyncImagePainter(src),
