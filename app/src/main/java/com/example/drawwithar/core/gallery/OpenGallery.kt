@@ -1,4 +1,4 @@
-package com.example.drawwithar.gallery
+package com.example.drawwithar.core.gallery
 
 import android.Manifest
 import android.content.Intent
@@ -19,13 +19,13 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.drawwithar.EMPTY_IMAGE_URI
+import com.example.drawwithar.feature.drawingpage.EMPTY_IMAGE_URI
 import com.example.drawwithar.util.Permission
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 @ExperimentalPermissionsApi
 @Composable
-fun GallerySelect(
+fun OpenGallery(
     modifier: Modifier = Modifier,
     onImageUri: (Uri) -> Unit = { }
 ) {

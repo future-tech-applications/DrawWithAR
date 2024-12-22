@@ -1,4 +1,4 @@
-package com.example.drawwithar.model
+package com.example.drawwithar.feature.drawingpage.model
 
 data class OpacitySliderModel (
     val alpha: Float = 0.5f,

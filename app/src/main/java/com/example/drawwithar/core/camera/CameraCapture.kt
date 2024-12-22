@@ -1,4 +1,4 @@
-package com.example.drawwithar.camera
+package com.example.drawwithar.core.camera
 
 import android.Manifest
 import android.content.Intent
@@ -51,10 +51,10 @@ fun CameraCapture(
     // Ask for Camera permissions
     Permission(
         permission = Manifest.permission.CAMERA,
-        rationale = "You said you wanted a picture, so I'm going to have to ask for permission.",
+        rationale = "You said you wanted a picture for drawing, so I'm going to have to ask for permission.",
         permissionNotAvailableContent = {
             Column(modifier) {
-                Text("O noes! No Camera!")
+                Text("O noes! No Camera! Artist requires its tools!")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {

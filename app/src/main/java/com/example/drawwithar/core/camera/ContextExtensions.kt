@@ -1,4 +1,4 @@
-package com.example.drawwithar.camera
+package com.example.drawwithar.core.camera
 
 import android.content.Context
 import android.util.Log

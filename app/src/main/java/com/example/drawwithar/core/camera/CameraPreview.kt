@@ -1,4 +1,4 @@
-package com.example.drawwithar.camera
+package com.example.drawwithar.core.camera
 
 import android.view.ViewGroup
 import androidx.camera.core.Preview

@@ -1,4 +1,4 @@
-package com.example.drawwithar.ui.components
+package com.example.drawwithar.feature.drawingpage.uicomponent
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.drawwithar.R
-import com.example.drawwithar.model.OpacitySliderModel
+import com.example.drawwithar.feature.drawingpage.model.OpacitySliderModel
 
 @Composable
 fun OpacitySlider(

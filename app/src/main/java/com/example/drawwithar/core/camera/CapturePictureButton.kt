@@ -1,4 +1,4 @@
-package com.example.drawwithar.camera
+package com.example.drawwithar.core.camera
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package com.example.drawwithar
+package com.example.drawwithar.feature.drawingpage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")
 
-class MainViewModel : ViewModel() {
+class DrawingViewModel : ViewModel() {
 
     private val _drawingControlItemStates = MutableStateFlow<List<Boolean>>(emptyList())
     val drawingControlItemStates: StateFlow<List<Boolean>> = _drawingControlItemStates.asStateFlow()
