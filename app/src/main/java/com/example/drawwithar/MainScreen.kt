@@ -11,8 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,6 +28,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.ViewModel
 import coil.annotation.ExperimentalCoilApi
 import com.example.drawwithar.camera.CameraCapture
 import com.example.drawwithar.gallery.GallerySelect
@@ -42,51 +45,35 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @ExperimentalPermissionsApi
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val view = LocalView.current
+fun MainScreen(viewModel: MainViewModel) {
 
-    var imageUri by rememberSaveable { mutableStateOf(EMPTY_IMAGE_URI) }
-    var isStartDrawing by rememberSaveable { mutableStateOf(false) }
-    var alphaValue by rememberSaveable { mutableFloatStateOf(0.5f) }
+//    var showGallerySelect by rememberSaveable { mutableStateOf(false) }
+//    var imageUri by rememberSaveable { mutableStateOf(EMPTY_IMAGE_URI) }
+//    var isStartDrawing by rememberSaveable { mutableStateOf(imageUri != EMPTY_IMAGE_URI) }
+//    var alphaValue by rememberSaveable { mutableFloatStateOf(0.5f) }
+//
+//    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+//    var isOpacitySliderVisible by rememberSaveable { mutableStateOf(true) }
 
-    var selectedTab by remember { mutableStateOf(0) }
-    var isOpacitySliderVisible by remember { mutableStateOf(false) }
-
-
-
-    // Hide system bars
-    LaunchedEffect(Unit) {
-        val windowInsetsController = ViewCompat.getWindowInsetsController(view)
-        windowInsetsController?.let {
-            it.hide(WindowInsetsCompat.Type.systemBars())
-            it.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
-    }
-
-    // Restore system bars on dispose
-    DisposableEffect(Unit) {
-        onDispose {
-            val windowInsetsController = ViewCompat.getWindowInsetsController(view)
-            windowInsetsController?.show(WindowInsetsCompat.Type.systemBars())
-        }
-    }
+    val showGallery by viewModel.showGallery.collectAsState()
+    val imageUri by viewModel.imageUri.collectAsState()
+    val isStartDrawing by viewModel.isStartDrawing.collectAsState()
+    val alphaValue by viewModel.alphaValue.collectAsState()
+    val isOpacitySliderVisible by viewModel.isOpacitySliderVisible.collectAsState()
 
     Scaffold(
         topBar = {
             CustomTopAppBar(
-                title = "Draw with AR",
-                onBackPresses = {  },
+                title =  "Draw with AR",
+                onBackPressed = {  },
                 isShowBackBtn = true,
                 actions = {
                     // => Button to Finish Drawing
-                    if(isStartDrawing) {
+                    if(imageUri != EMPTY_IMAGE_URI) {
                         BorderedButton(
-                            modifier = Modifier.padding(8.dp),
-                            text = "Finish",
+                            text = if(isStartDrawing) "Finish" else "Start",
                             onClick = {
-                                imageUri = if(isStartDrawing) EMPTY_IMAGE_URI else imageUri
-                                isStartDrawing = !isStartDrawing
+                                viewModel.toggleDrawing()
                             }
                         )
                     }
@@ -96,18 +83,18 @@ fun MainScreen(modifier: Modifier = Modifier) {
         // Main content of the screen
         content = { innerPadding ->
             if (imageUri != EMPTY_IMAGE_URI) {
-                Box(modifier = modifier
+                Box(modifier = Modifier
+                    .fillMaxSize()
                     .padding(innerPadding)
                     .background(color = MaterialTheme.colorScheme.surfaceContainer)
                 ) {
-                    // 1 => Camera Preview to open live camera
-                    if(isStartDrawing) CameraCapture(isDrawing = isStartDrawing)
+
+                    // 1 => Camera Preview to open running camera
+                    if(isStartDrawing) CameraCapture(modifier = Modifier.fillMaxSize(), isDrawing = isStartDrawing)
 
                     // 2 => Open and Overlay Image to Draw
                     DrawingImage(
                         modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxSize()
                             .padding(16.dp),
                         src = imageUri,
                         alpha = alphaValue
@@ -115,54 +102,49 @@ fun MainScreen(modifier: Modifier = Modifier) {
 
                     // 3 => Bottom Controls
                     val controlItems = getListOfControlItems()
-                    DrawingControlBottomBar(
-                        modifier = Modifier.align(Alignment.BottomCenter),
-                        isOpacitySliderVisible = isOpacitySliderVisible,
-                        opacitySliderModel = OpacitySliderModel(
-                            alpha = alphaValue,
-                            isStartDrawing = isStartDrawing,
-                            onStartDrawing = {
-                                imageUri = if(isStartDrawing) EMPTY_IMAGE_URI else imageUri
-                                isStartDrawing = !isStartDrawing
-                            },
-                            onAlphaChange = {
-                                alphaValue = it
-                            }
-                        ),
-                        items = controlItems,
-                        onItemSelected = { selectedTab = it
-                            when(selectedTab) {
-                                0 -> {
-                                    isOpacitySliderVisible = true
-                                }
-
-                            }
-                                         },
-
+                    val opacitySliderModel = OpacitySliderModel(
+                        alpha = alphaValue,
+                        isStartDrawing = isStartDrawing,
+                        onStartDrawing = {
+                            viewModel.toggleDrawing()
+                        },
+                        onAlphaChange = {
+                            viewModel.updateAlphaValue(it)
+                        }
                     )
 
+                    if(isStartDrawing) {
+                        DrawingControlBottomBar(
+                            viewModel = viewModel,
+                            modifier = Modifier.align(Alignment.BottomCenter),
+                            isOpacitySliderVisible = isOpacitySliderVisible,
+                            opacitySliderModel = opacitySliderModel,
+                            items = controlItems
+                        )
+                    }
                 }
             }
 
             // to get image from gallery //
             else {
-                var showGallerySelect by rememberSaveable { mutableStateOf(false) }
                 // Open Gallery
-                if (showGallerySelect) {
+                if (showGallery) {
                     GallerySelect(
                         modifier = Modifier,
-                        onImageUri = { uri ->
-                            showGallerySelect = false
-                            imageUri = uri
+                        onImageUri = {
+                            viewModel.selectImage(it)
+                            viewModel.toggleShowGallery()
                         }
                     )
                 } else {
-                    Box(modifier = modifier.padding(innerPadding)) {
+                    Box(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                    ) {
                         // Open Camera
                         CameraCapture(
-                            modifier = modifier,
                             onImageFile = { file ->
-                                imageUri = file.toUri()
+                                viewModel.selectImage(file.toUri())
                             }
                         )
                         Button(
@@ -171,7 +153,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                                 .padding(4.dp)
                             ,
                             onClick = {
-                                showGallerySelect = true
+                                viewModel.toggleShowGallery()
                             }
                         ) {
                             Text("Select from Gallery")

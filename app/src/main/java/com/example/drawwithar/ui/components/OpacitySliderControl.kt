@@ -36,22 +36,6 @@ fun OpacitySliderControl(
             )
         }
 
-        // => Button to Enable AR and start Drawing button
-        if(!opacitySliderModel.isStartDrawing) {
-            Button(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(vertical = 4.dp)
-                    .align(Alignment.CenterHorizontally)
-                ,
-                onClick = {
-                    opacitySliderModel.onStartDrawing()
-                }
-            ) {
-                val text = "All Set? Start Drawing"
-                Text(text)
-            }
-        }
     }
 
 }

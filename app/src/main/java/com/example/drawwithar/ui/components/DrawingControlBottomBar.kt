@@ -21,40 +21,52 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.draw.clipToBounds
+import com.example.drawwithar.MainViewModel
 import com.example.drawwithar.R
 import com.example.drawwithar.model.OpacitySliderModel
 
-data class BottomBarItem(
+data class BottomBarItemModel(
     val icon: @Composable (isSelected: Boolean) -> Unit,
-    val label: String
+    val label: String,
 )
 
 @Composable
 fun DrawingControlBottomBar(
-    items: List<BottomBarItem>,
+    viewModel: MainViewModel,
+    items: List<BottomBarItemModel>,
     modifier: Modifier = Modifier,
     initiallyVisible: Boolean = true,
-    onItemSelected: (Int) -> Unit,
     isOpacitySliderVisible: Boolean = false,
     opacitySliderModel: OpacitySliderModel = OpacitySliderModel()
 
 ) {
-    var selectedItemIndex by remember { mutableIntStateOf(0) }
     var isBarVisible by remember { mutableStateOf(initiallyVisible) }
+    val itemStates by viewModel.drawingControlItemStates.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.initializeDrawingControlItemStates(items.size)
+    }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
     ) {
-
+        // Opacity Slider
+        OpacitySliderControl(
+            modifier = modifier.padding(8.dp),
+            opacitySliderModel = opacitySliderModel,
+            isSliderVisible = isOpacitySliderVisible
+        )
         // Tip-Top Handler
         TipTopHandler(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(vertical = 2.dp),
             isBarVisible = true,
             onToggleVisibility = { isBarVisible = !isBarVisible }
         )
-
         AnimatedVisibility(
             visible = isBarVisible,
             enter = androidx.compose.animation.fadeIn(animationSpec = tween(300)),
@@ -64,12 +76,6 @@ fun DrawingControlBottomBar(
                 modifier = modifier
                     .fillMaxWidth()
             ) {
-                // Slider
-                OpacitySliderControl(
-                    modifier = modifier.padding(8.dp),
-                    opacitySliderModel = opacitySliderModel,
-                    isSliderVisible = isOpacitySliderVisible
-                )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -80,10 +86,9 @@ fun DrawingControlBottomBar(
                     items.forEachIndexed { index, item ->
                         BottomBarItem(
                             item = item,
-                            isSelected = selectedItemIndex == index,
+                            isSelected = itemStates.getOrElse(index) { false },
                             onClick = {
-                                selectedItemIndex = index
-                                onItemSelected(index)
+                                viewModel.onDrawingControlItemSelected(index)
                             }
                         )
                     }
@@ -95,7 +100,7 @@ fun DrawingControlBottomBar(
 
 @Composable
 private fun BottomBarItem(
-    item: BottomBarItem,
+    item: BottomBarItemModel,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -148,9 +153,9 @@ fun TipTopHandler(
 
 
 
-fun getListOfControlItems(): List<BottomBarItem> {
+fun getListOfControlItems(): List<BottomBarItemModel> {
     return listOf(
-        BottomBarItem(
+        BottomBarItemModel(
             icon = { isSelected ->
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_opacity_24),
@@ -160,7 +165,7 @@ fun getListOfControlItems(): List<BottomBarItem> {
             },
             label = "Opacity"
         ),
-        BottomBarItem(
+        BottomBarItemModel(
             icon = { isSelected ->
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_flip_24),
@@ -170,7 +175,7 @@ fun getListOfControlItems(): List<BottomBarItem> {
             },
             label = "Flip"
         ),
-        BottomBarItem(
+        BottomBarItemModel(
             icon = { isSelected ->
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_flash_on_24),
@@ -180,7 +185,7 @@ fun getListOfControlItems(): List<BottomBarItem> {
             },
             label = "Flashlight"
         ),
-        BottomBarItem(
+        BottomBarItemModel(
             icon = { isSelected ->
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_lock_24),
@@ -190,7 +195,7 @@ fun getListOfControlItems(): List<BottomBarItem> {
             },
             label = "Freeze"
         ),
-        BottomBarItem(
+        BottomBarItemModel(
             icon = { isSelected ->
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_replay_24),

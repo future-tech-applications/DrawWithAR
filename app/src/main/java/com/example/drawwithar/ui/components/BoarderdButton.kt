@@ -2,12 +2,14 @@ package com.example.drawwithar.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,7 +34,7 @@ fun BorderedButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .background(color = Color.Transparent)
+            .padding(8.dp)
             .border(
                 width = borderWidth,
                 color = borderColor,
@@ -40,13 +42,11 @@ fun BorderedButton(
             )
             .width(100.dp)
             .height(35.dp)
+            .fillMaxSize()
         ,
         shape = borderShape,
         elevation = ButtonDefaults.buttonElevation(buttonElevation)
     ) {
-        Text(
-            text = text,
-            modifier = Modifier
-        )
+        Text(text)
     }
 }
