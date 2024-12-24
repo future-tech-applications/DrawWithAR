@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import android.net.Uri
+import com.example.drawwithar.feature.drawingpage.model.DrawingImageOrientation
 import kotlinx.coroutines.flow.asStateFlow
 
 val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")
@@ -14,6 +15,19 @@ class DrawingViewModel : ViewModel() {
 
     private val _drawingControlItemStates = MutableStateFlow<List<Boolean>>(emptyList())
     val drawingControlItemStates: StateFlow<List<Boolean>> = _drawingControlItemStates.asStateFlow()
+
+    private val _drawingImageOrientation = MutableStateFlow(DrawingImageOrientation.NORMAL)
+    val drawingImageOrientation: StateFlow<DrawingImageOrientation> = _drawingImageOrientation
+
+
+    // Tracks whether the canvas is frozen
+    private val _isDrawingImageFrozen = MutableStateFlow(false)
+    val isDrawingImageFrozen: StateFlow<Boolean> = _isDrawingImageFrozen
+
+    fun toggleFreezeState() {
+        _isDrawingImageFrozen.value = !_isDrawingImageFrozen.value
+    }
+
 
     suspend fun initializeDrawingControlItemStates(size: Int) {
         if (_drawingControlItemStates.value.isEmpty()) { // Ensure only initialized once
@@ -79,9 +93,32 @@ class DrawingViewModel : ViewModel() {
                 0 -> {
                     _isOpacitySliderVisible.emit(!isCurrentlySelected)
                 }
+                1 -> {
+                    handleFlipAction()
+                }
+                2 -> {
+                    //toggleFlashlight()
+                }
+                3 -> {
+                    toggleFreezeState()
+                }
+                4 -> {
+                    //toggleReset()
+                }
+
+
             }
         }
     }
+
+    private fun handleFlipAction() {
+        _drawingImageOrientation.value = when (_drawingImageOrientation.value) {
+            DrawingImageOrientation.NORMAL -> DrawingImageOrientation.FLIPPED_HORIZONTAL
+            DrawingImageOrientation.FLIPPED_HORIZONTAL -> DrawingImageOrientation.FLIPPED_VERTICAL
+            DrawingImageOrientation.FLIPPED_VERTICAL -> DrawingImageOrientation.NORMAL
+        }
+    }
+
 
     // Logic for selecting a tab
     private fun updateDrawingControlItemState(selectedItemIndex: Int) {
