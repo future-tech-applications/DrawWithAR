@@ -2,10 +2,15 @@ package com.example.drawwithar.feature.drawingpage.uicomponent
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,8 +30,8 @@ fun DrawingControlBottomBar(
     isOpacitySliderVisible: Boolean = false,
     opacitySliderModel: OpacitySliderModel = OpacitySliderModel()
 ) {
-    var isBarVisible by remember { mutableStateOf(initiallyVisible) }
-    val itemStates by viewModel.drawingControlItemStates.collectAsState()
+    var isBarVisible by rememberSaveable { mutableStateOf(initiallyVisible) }
+    val itemStates by viewModel.drawingControlItemSelectedStates.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.initializeDrawingControlItemStates(items.size)
@@ -37,21 +42,29 @@ fun DrawingControlBottomBar(
         OpacitySliderControl(
             modifier = modifier.padding(8.dp),
             opacitySliderModel = opacitySliderModel,
-            isSliderVisible = isOpacitySliderVisible
+            isSliderVisible = isOpacitySliderVisible && isBarVisible
         )
+
         // Tip-Top Handler
         TipTopHandler(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(vertical = 2.dp),
-            isBarVisible = true,
+            isBarVisible = isBarVisible,
             onToggleVisibility = { isBarVisible = !isBarVisible }
         )
         AnimatedVisibility(
             visible = isBarVisible,
-            enter = androidx.compose.animation.fadeIn(animationSpec = tween(300)),
-            exit = androidx.compose.animation.fadeOut(animationSpec = tween(300))
-        ) {
+            enter = slideInVertically(
+                animationSpec = tween(durationMillis = 400),
+                initialOffsetY = { it } // Slide in from below
+            ) + fadeIn(animationSpec = tween(durationMillis = 400)),
+            exit = slideOutVertically(
+                animationSpec = tween(durationMillis = 400),
+                targetOffsetY = { it } // Slide out below
+            ) + fadeOut(animationSpec = tween(durationMillis = 400))
+        )
+         {
             Column(modifier = modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier

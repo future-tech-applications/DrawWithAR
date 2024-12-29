@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.drawwithar.R
+import com.example.drawwithar.core.common.Const
 import com.example.drawwithar.feature.drawingpage.model.OpacitySliderModel
 
 @Composable
@@ -43,7 +44,7 @@ fun OpacitySlider(
                 .weight(1f),
             value = opacitySliderModel.alpha,
             onValueChange = { opacitySliderModel.onAlphaChange(it) },
-            valueRange = 0.1f..1.0f,
+            valueRange = Const.OpacitySlider.MIN_VALUE..Const.OpacitySlider.MAX_VALUE,
 
             )
         Icon(

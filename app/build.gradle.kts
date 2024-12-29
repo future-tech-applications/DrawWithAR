@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    // ksp
+    alias(libs.plugins.devtools.ksp)
+
+    // dagger hilt
+    alias(libs.plugins.dagger.hilt)
 }
 
 android {
@@ -73,6 +79,11 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.accompanist.permissions)
     implementation(libs.coil.compose)
+
+
+    // dagger hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 
 
 

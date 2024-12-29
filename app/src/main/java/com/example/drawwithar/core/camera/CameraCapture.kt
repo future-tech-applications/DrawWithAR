@@ -1,6 +1,7 @@
 package com.example.drawwithar.core.camera
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -31,12 +32,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import com.example.drawwithar.core.eventbus.AppEvent
+import com.example.drawwithar.core.eventbus.getAppEventBus
 import com.example.drawwithar.util.Permission
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import java.io.File
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+@SuppressLint("RestrictedApi")
 @ExperimentalPermissionsApi
 @ExperimentalCoroutinesApi
 @Composable
@@ -46,7 +50,10 @@ fun CameraCapture(
     onImageFile: (File) -> Unit = { },
     isDrawing: Boolean = false
 ) {
+    val appEventBus = getAppEventBus()
     val context = LocalContext.current
+    val hasFlashMode by remember { mutableStateOf(true) } // State for flash mode toggle
+    var isFlashLightToggled by remember { mutableStateOf(false) } // State for flash light toggle
 
     // Ask for Camera permissions
     Permission(
@@ -74,13 +81,25 @@ fun CameraCapture(
             val lifecycleOwner = LocalLifecycleOwner.current
             val coroutineScope = rememberCoroutineScope()
             var previewUseCase by remember { mutableStateOf<UseCase>(Preview.Builder().build()) }
+
+            // toggle flash light
+            if (isFlashLightToggled) {
+                previewUseCase.camera?.cameraControl?.enableTorch(true)
+            } else {
+                previewUseCase.camera?.cameraControl?.enableTorch(false)
+            }
+
             val imageCaptureUseCase by remember {
                 mutableStateOf(
                     ImageCapture.Builder()
                         .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
+                        .setFlashMode(
+                            if (hasFlashMode) ImageCapture.FLASH_MODE_ON else ImageCapture.FLASH_MODE_OFF
+                        )
                         .build()
                 )
             }
+
             Box {
                 CameraPreview(
                     modifier = Modifier.fillMaxSize(),
@@ -90,7 +109,7 @@ fun CameraCapture(
                 )
 
                 // Show capture button only if camera is not drawing
-                if(!isDrawing) {
+                if (!isDrawing) {
                     CapturePictureButton(
                         modifier = Modifier
                             .size(100.dp)
@@ -104,6 +123,15 @@ fun CameraCapture(
                     )
                 }
 
+            }
+
+            // listen to flash light toggle event
+            LaunchedEffect(appEventBus) {
+                appEventBus.subscribe(this) {
+                        event ->
+                    if(event is AppEvent.FlashLightToggledEvent)
+                        isFlashLightToggled = event.toggledValue
+                }
             }
             LaunchedEffect(previewUseCase) {
                 val cameraProvider = context.getCameraProvider()

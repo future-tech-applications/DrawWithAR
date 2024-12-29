@@ -2,4 +2,10 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
+
+    // ksp
+    alias(libs.plugins.devtools.ksp) apply false
+
+    // dagger hilt
+    alias(libs.plugins.dagger.hilt) apply false
 }

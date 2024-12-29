@@ -13,10 +13,11 @@ import com.example.compose.DrawWithARTheme
 import com.example.drawwithar.feature.drawingpage.DrawingScreen
 import com.example.drawwithar.feature.drawingpage.DrawingViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-//val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<DrawingViewModel>()

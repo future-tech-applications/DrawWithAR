@@ -51,6 +51,7 @@ fun DrawingScreen(viewModel: DrawingViewModel) {
                             text = if(isStartDrawing) "Finish" else "Start",
                             onClick = {
                                 viewModel.toggleDrawing()
+                                viewModel.resetDrawingImageStates()
                             }
                         )
                     }
