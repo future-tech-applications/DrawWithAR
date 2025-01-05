@@ -35,12 +35,20 @@ fun DrawingImage(
     initialAlpha: Float = Const.OpacitySlider.INITIAL_VALUE
 ) {
     val drawingImageOrientation by viewModel.drawingImageOrientation.collectAsState()
+
     val flipScaleX by animateFloatAsState(
-        targetValue = if (drawingImageOrientation == DrawingImageOrientation.FLIPPED_HORIZONTAL) Const.Flip.HORIZONTAL_SCALE else Const.Flip.DEFAULT_SCALE,
+        targetValue = when (drawingImageOrientation) {
+            DrawingImageOrientation.FLIPPED_HORIZONTAL, DrawingImageOrientation.FLIPPED_BOTH -> Const.Flip.HORIZONTAL_SCALE
+            else -> Const.Flip.DEFAULT_SCALE
+        },
         label = ""
     )
+
     val flipScaleY by animateFloatAsState(
-        targetValue = if (drawingImageOrientation == DrawingImageOrientation.FLIPPED_VERTICAL) Const.Flip.VERTICAL_SCALE else Const.Flip.DEFAULT_SCALE,
+        targetValue = when (drawingImageOrientation) {
+            DrawingImageOrientation.FLIPPED_VERTICAL, DrawingImageOrientation.FLIPPED_BOTH -> Const.Flip.VERTICAL_SCALE
+            else -> Const.Flip.DEFAULT_SCALE
+        },
         label = ""
     )
 
@@ -54,6 +62,8 @@ fun DrawingImage(
         Modifier.pointerInput(Unit) {
             detectTransformGestures { _, pan, zoom, rotate ->
                 viewModel.updateScale(scale * zoom)
+
+
                 val adjustedRotate = rotate * flipScaleX * flipScaleY
                 viewModel.updateRotation(rotation + adjustedRotate)
 

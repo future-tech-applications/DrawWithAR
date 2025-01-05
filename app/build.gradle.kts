@@ -74,15 +74,22 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.androidx.navigation.compose)
+
+
+    // camera
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
     implementation(libs.accompanist.permissions)
+
+    // coil
     implementation(libs.coil.compose)
 
 
     // dagger hilt
     implementation(libs.hilt.android)
+    implementation (libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.android.compiler)
 
 

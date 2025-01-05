@@ -1,6 +1,7 @@
 package com.example.drawwithar.feature.drawingpage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -9,11 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.example.drawwithar.core.camera.OpenCamera
 import com.example.drawwithar.core.gallery.OpenGallery
 import com.example.drawwithar.core.common.ui.components.BorderedButton
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
+import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
+import com.example.drawwithar.feature.homepage.bottomnavigation.CustomBottomNavBar
+import com.example.drawwithar.feature.homepage.bottomnavigation.getListOfBottomNavigationItems
+import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
+import com.example.drawwithar.util.navigateTo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -21,8 +30,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @ExperimentalPermissionsApi
 @Composable
-fun DrawingScreen(viewModel: DrawingViewModel) {
-
+fun DrawingScreen(
+    navController: NavHostController,
+    viewModel: DrawingViewModel,
+) {
     // to get image from gallery
     val showGallery by viewModel.showGallery.collectAsState()
 
@@ -38,15 +49,22 @@ fun DrawingScreen(viewModel: DrawingViewModel) {
     // to check if opacity slider is visible or not
     val isOpacitySliderVisible by viewModel.isOpacitySliderVisible.collectAsState()
 
+
     Scaffold(
         topBar = {
             CustomTopAppBar(
                 title =  "Draw with AR",
-                onBackPressed = {  },
+                onBackPressed = {
+                    navController.navigateTo(
+                        dest = HomePageRoutes.HomePage.route,
+                        removeCurrentPageOnPop = true,
+                        restorePageState = false,
+                    )
+                },
                 isShowBackBtn = true,
                 actions = {
                     // => Button to Start or Finish Drawing
-                    if(imageUri != EMPTY_IMAGE_URI) {
+                    if(imageUri!= EMPTY_IMAGE_URI) {
                         BorderedButton(
                             text = if(isStartDrawing) "Finish" else "Start",
                             onClick = {
@@ -57,45 +75,48 @@ fun DrawingScreen(viewModel: DrawingViewModel) {
                     }
                 }
             )
-        },
-        content = { innerPadding ->
-            // if image uri is not empty, show drawing started content
-            if (imageUri != EMPTY_IMAGE_URI) {
-                DrawingStartedContent(
+                 },
+        )
+    { innerPadding ->
+        // if image uri is not empty, show drawing started content
+        if (imageUri != EMPTY_IMAGE_URI) {
+            DrawingStartedContent(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(color = MaterialTheme.colorScheme.surfaceContainer),
+                viewModel = viewModel,
+                imageUri = imageUri,
+                alphaValue = alphaValue,
+                isOpacitySliderVisible = isOpacitySliderVisible,
+                isStartDrawing = isStartDrawing
+            )
+        }
+        // if image uri is empty, show camera preview
+        else {
+            // case1: Open Gallery explicitly to have an image
+            if (showGallery) {
+                OpenGallery(
+
+                    modifier = Modifier,
+                    onImageUri = {
+                        viewModel.selectImage(it)
+                        viewModel.toggleShowGallery()
+                    }
+                )
+            } else {
+                // case2: Open Camera by default to capture an image
+                OpenCamera(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
-                        .background(color = MaterialTheme.colorScheme.surfaceContainer),
-                    viewModel = viewModel,
-                    imageUri = imageUri,
-                    alphaValue = alphaValue,
-                    isOpacitySliderVisible = isOpacitySliderVisible,
-                    isStartDrawing = isStartDrawing
+                        .padding(innerPadding),
+                    viewModel = viewModel
                 )
             }
-            // if image uri is empty, show camera preview
-            else {
-                // case1: Open Gallery explicitly to have an image
-                if (showGallery) {
-                    OpenGallery(
-                        modifier = Modifier,
-                        onImageUri = {
-                            viewModel.selectImage(it)
-                            viewModel.toggleShowGallery()
-                        }
-                    )
-                } else {
-                    // case2: Open Camera by default to capture an image
-                    OpenCamera(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        viewModel = viewModel
-                    )
-                }
-            }
         }
-    )
+    }
+
+
 
 }
 

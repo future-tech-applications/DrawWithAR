@@ -1,0 +1,46 @@
+package com.example.drawwithar.core.common.ui.components
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.drawwithar.R
+import com.example.drawwithar.feature.drawingpage.templates
+import com.example.drawwithar.feature.homepage.MyDrawingsSection
+
+@Composable
+fun SectionedContent(navController: NavHostController, padding: PaddingValues) {
+    Column(modifier = Modifier.padding(padding)) {
+        MyDrawingsSection(
+            title = "My Drawings",
+            navController = navController,
+            backgroundColor = Color(0xFFFFEBEB)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+        MyDrawingsSection(
+            title = "Templates",
+            navController = navController,
+            imagesList = templates,
+            backgroundColor = Color(0xFFFFE0E0)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        MyDrawingsSection(
+            title = "Favorites",
+            navController = navController,
+            backgroundColor = Color(0xFFFFF3CC)
+        )
+    }
+}

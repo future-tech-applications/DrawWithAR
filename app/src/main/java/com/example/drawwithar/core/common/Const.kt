@@ -36,4 +36,8 @@ object Const {
         const val MAX_VALUE = 1.0f
         const val IS_VISIBLE = true
     }
+
+    object FlipAction {
+        const val IS_VISIBLE = false
+    }
 }

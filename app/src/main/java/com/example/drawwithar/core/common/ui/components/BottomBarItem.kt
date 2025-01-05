@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,13 +17,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.drawwithar.core.common.model.BottomBarItemModel
+import com.example.drawwithar.feature.drawingpage.DrawingViewModel
 
 @Composable
 fun BottomBarItem(
     item: BottomBarItemModel,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    viewModel: DrawingViewModel
 ) {
+    val hasChanges by viewModel.hasChanges.collectAsState()
     Column(
         modifier = Modifier
             .clickable(
@@ -33,7 +38,13 @@ fun BottomBarItem(
             .clipToBounds(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item.icon(isSelected)
+        if(item.label == "Reset") {
+            item.icon(hasChanges)
+        }
+        else {
+            item.icon(isSelected)
+        }
+
         Text(
             text = item.label,
             fontSize = 12.sp,
