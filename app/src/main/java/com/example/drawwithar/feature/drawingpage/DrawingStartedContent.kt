@@ -10,7 +10,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.drawwithar.core.camera.CameraCapture
+import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
+import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.feature.drawingpage.model.OpacitySliderModel
 import com.example.drawwithar.feature.drawingpage.uicomponent.DrawingControlSection
 import com.example.drawwithar.feature.drawingpage.uicomponent.DrawingImage
@@ -27,6 +30,8 @@ fun DrawingStartedContent(
     alphaValue: Float,
     isOpacitySliderVisible: Boolean
 ) {
+    val sharedViewModel = getSharedViewModel()
+
     Box(modifier = modifier) {
         // 1 => Camera Preview to open running camera
         if(isStartDrawing) CameraCapture(modifier = Modifier.fillMaxSize(), isDrawing = isStartDrawing)
@@ -49,7 +54,7 @@ fun DrawingStartedContent(
             alpha = alphaValue,
             isStartDrawing = isStartDrawing,
             onStartDrawing = {
-                viewModel.toggleDrawing()
+                sharedViewModel.toggleDrawing()
             },
             onAlphaChange = {
                 viewModel.updateAlphaValue(it)

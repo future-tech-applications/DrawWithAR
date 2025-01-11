@@ -197,15 +197,15 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
         }
     }
 
-    // Logic for toggling drawing state (drawing started)
-    fun toggleDrawing() {
-        viewModelScope.launch {
-            if (_isStartDrawing.value) {
-                _imageUri.emit(EMPTY_IMAGE_URI)
-            }
-            _isStartDrawing.emit(!_isStartDrawing.value)
-        }
-    }
+//    // Logic for toggling drawing state (drawing started)
+//    fun toggleDrawing() {
+//        viewModelScope.launch {
+//            if (_isStartDrawing.value) {
+//                _imageUri.emit(EMPTY_IMAGE_URI)
+//            }
+//            _isStartDrawing.emit(!_isStartDrawing.value)
+//        }
+//    }
 
     // Logic for updating alpha value
     fun updateAlphaValue(alpha: Float) {
@@ -299,15 +299,15 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
         }
     }
 
-    // Logic for selecting an image (from gallery)
-    fun selectImage(uri: Any) {
-        viewModelScope.launch {
-            _imageUri.emit(uri)
-            if (uri != EMPTY_IMAGE_URI) {
-                _isStartDrawing.emit(true)
-            }
-        }
-    }
+//    // Logic for selecting an image (from gallery)
+//    fun selectImage(uri: Any) {
+//        viewModelScope.launch {
+//            _imageUri.emit(uri)
+//            if (uri != EMPTY_IMAGE_URI) {
+//                _isStartDrawing.emit(true)
+//            }
+//        }
+//    }
 
     // reset all the applied controls on drawing image
     fun resetDrawingImageStates() {

@@ -11,14 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,21 +21,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.ui.components.SquareImageHolder
-import com.example.drawwithar.feature.drawingpage.DrawingViewModel
+import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
+import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.navigateTo
 
 @Composable
 fun SeeAllPage(
-    drawingViewModel: DrawingViewModel,
     navController: NavHostController,
     title: String,
     imagesList: List<Any>,
     backgroundColor: Color = MaterialTheme.colorScheme.background
 ) {
+    val sharedViewModel = getSharedViewModel()
+
     Scaffold(
         topBar = {
             CustomTopAppBar(
@@ -78,7 +76,7 @@ fun SeeAllPage(
                     items(imagesList.size) { index ->
                         val image = imagesList[index]
                         SquareImageHolder(
-                            drawingViewModel = drawingViewModel,
+                            sharedViewModel = sharedViewModel,
                             navController = navController,
                             image = painterResource(id = image as Int), // Adjust for `Uri` if needed
                             modifier = Modifier

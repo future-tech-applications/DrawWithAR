@@ -27,14 +27,13 @@ sealed class HomePageRoutes(val route: String) {
  */
 
 fun NavGraphBuilder.homePageNavGraph(
-    drawingViewModel: DrawingViewModel,
     navController: NavHostController
 ) {
     navigation(startDestination = HomePageRoutes.HomePage.route, route = HOME_PAGE_GRAPH) {
         composable(
             HomePageRoutes.HomePage.route,
         ) {
-            HomeScreen(drawingViewModel = drawingViewModel, navController)
+            HomeScreen(navController)
         }
 
         composable(
@@ -50,7 +49,6 @@ fun NavGraphBuilder.homePageNavGraph(
 
             }
                 SeeAllPage(
-                    drawingViewModel = drawingViewModel,
                     navController = navController,
                     title = title,
                     imagesList = imagesList

@@ -15,18 +15,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.drawwithar.R
-import com.example.drawwithar.feature.drawingpage.DrawingViewModel
+import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
 import com.example.drawwithar.util.navigateTo
 
 @Composable
 fun SquareImageHolder(
-    drawingViewModel: DrawingViewModel,
+    sharedViewModel: SharedViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
     image: Painter,
@@ -39,8 +36,7 @@ fun SquareImageHolder(
             .background(backgroundColor)
             .clickable(
                 onClick = {
-                    drawingViewModel.selectImage(image)
-                    drawingViewModel.toggleShowGallery()
+                    sharedViewModel.selectImage(image)
                     navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
                 }
             )

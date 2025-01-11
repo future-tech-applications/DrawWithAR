@@ -23,7 +23,7 @@ fun DrawWithARNavHost(
         navController = navController,
         startDestination = HOME_PAGE_GRAPH,
     ) {
-        homePageNavGraph(navController =  navController, drawingViewModel = drawingViewModel)
+        homePageNavGraph(navController =  navController)
         drawingPageNavGraph(navController = navController, viewModel = drawingViewModel)
 
     }
