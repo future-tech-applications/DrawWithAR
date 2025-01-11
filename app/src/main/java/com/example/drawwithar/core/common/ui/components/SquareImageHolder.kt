@@ -2,6 +2,7 @@ package com.example.drawwithar.core.common.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -16,10 +17,17 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.drawwithar.R
+import com.example.drawwithar.feature.drawingpage.DrawingViewModel
+import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
+import com.example.drawwithar.util.navigateTo
 
 @Composable
 fun SquareImageHolder(
+    drawingViewModel: DrawingViewModel,
+    navController: NavHostController,
     modifier: Modifier = Modifier,
     image: Painter,
     backgroundColor: Color = MaterialTheme.colorScheme.surface
@@ -28,7 +36,15 @@ fun SquareImageHolder(
         modifier = modifier
             .size(120.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(backgroundColor),
+            .background(backgroundColor)
+            .clickable(
+                onClick = {
+                    drawingViewModel.selectImage(image)
+                    drawingViewModel.toggleShowGallery()
+                    navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
+                }
+            )
+        ,
         contentAlignment = Alignment.Center,
     ) {
         Image(

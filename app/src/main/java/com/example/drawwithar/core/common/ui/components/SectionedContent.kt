@@ -13,13 +13,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.drawwithar.R
+import com.example.drawwithar.feature.drawingpage.DrawingViewModel
 import com.example.drawwithar.feature.drawingpage.templates
 import com.example.drawwithar.feature.homepage.MyDrawingsSection
 
 @Composable
-fun SectionedContent(navController: NavHostController, padding: PaddingValues) {
+fun SectionedContent(drawingViewModel: DrawingViewModel, navController: NavHostController, padding: PaddingValues) {
     Column(modifier = Modifier.padding(padding)) {
         MyDrawingsSection(
+            drawingViewModel = drawingViewModel,
             title = "My Drawings",
             navController = navController,
             backgroundColor = Color(0xFFFFEBEB)
@@ -29,6 +31,7 @@ fun SectionedContent(navController: NavHostController, padding: PaddingValues) {
 
 
         MyDrawingsSection(
+            drawingViewModel = drawingViewModel,
             title = "Templates",
             navController = navController,
             imagesList = templates,
@@ -38,6 +41,7 @@ fun SectionedContent(navController: NavHostController, padding: PaddingValues) {
         Spacer(modifier = Modifier.height(16.dp))
 
         MyDrawingsSection(
+            drawingViewModel = drawingViewModel,
             title = "Favorites",
             navController = navController,
             backgroundColor = Color(0xFFFFF3CC)

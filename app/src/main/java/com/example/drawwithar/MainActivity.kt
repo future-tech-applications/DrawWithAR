@@ -35,6 +35,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val drawingViewModel: DrawingViewModel by viewModels()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             DrawWithARTheme {
-                DrawWithARNavHost(navController = navController)
+                DrawWithARNavHost(navController = navController, drawingViewModel = drawingViewModel)
 //                Scaffold(
 //                    topBar = {
 //                        CustomTopAppBar(

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import android.net.Uri
+import android.util.Log
 import com.example.drawwithar.R
 import com.example.drawwithar.core.common.Const
 import com.example.drawwithar.core.common.model.BottomBarItemModel
@@ -18,7 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")
+val EMPTY_IMAGE_URI: Any = Uri.parse("file://dev/null")
 
 val templates = listOf(
     R.drawable.drawing_template_1,
@@ -92,7 +93,7 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
 
     // state for if image chosen or captured
     private val _imageUri = MutableStateFlow(EMPTY_IMAGE_URI)
-    val imageUri: StateFlow<Uri> = _imageUri
+    val imageUri: StateFlow<Any> = _imageUri
 
     // state for if drawing started (an image choosen or captured and drawing started)
     private val _isStartDrawing = MutableStateFlow(false)
@@ -299,7 +300,7 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
     }
 
     // Logic for selecting an image (from gallery)
-    fun selectImage(uri: Uri) {
+    fun selectImage(uri: Any) {
         viewModelScope.launch {
             _imageUri.emit(uri)
             if (uri != EMPTY_IMAGE_URI) {

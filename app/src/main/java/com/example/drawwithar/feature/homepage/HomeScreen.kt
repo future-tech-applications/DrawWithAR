@@ -44,12 +44,14 @@ import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.ui.components.SectionedContent
 import com.example.drawwithar.core.common.ui.components.SquareAddButton
 import com.example.drawwithar.core.common.ui.components.SquareImageHolder
+import com.example.drawwithar.feature.drawingpage.DrawingViewModel
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.navigateTo
 
 @Composable
 fun HomeScreen(
+    drawingViewModel: DrawingViewModel,
     navController: NavHostController
 ) {
     Scaffold(
@@ -87,7 +89,7 @@ fun HomeScreen(
             }
         },
     ) { padding ->
-        SectionedContent(navController, padding)
+        SectionedContent(drawingViewModel, navController, padding)
     }
 }
 
@@ -96,6 +98,7 @@ fun HomeScreen(
 
 @Composable
 fun MyDrawingsSection(
+    drawingViewModel: DrawingViewModel,
     navController: NavHostController,
     title: String = "",
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
@@ -147,7 +150,9 @@ fun MyDrawingsSection(
                 items(imagesList.size) { index ->
                     val image = imagesList[index]
                     SquareImageHolder(
+                        drawingViewModel = drawingViewModel,
                         image = painterResource(id = image as Int),
+                        navController = navController,
                     )
                 }
             }

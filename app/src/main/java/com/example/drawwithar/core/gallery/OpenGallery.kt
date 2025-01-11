@@ -33,7 +33,7 @@ fun OpenGallery(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
-            onImageUri(uri ?: EMPTY_IMAGE_URI)
+            onImageUri(uri ?: EMPTY_IMAGE_URI as Uri)
         }
     )
 
@@ -69,7 +69,7 @@ fun OpenGallery(
                         Button(
                             modifier = Modifier.padding(4.dp),
                             onClick = {
-                                onImageUri(EMPTY_IMAGE_URI)
+                                onImageUri(EMPTY_IMAGE_URI as Uri)
                             }
                         ) {
                             Text("Use Camera")

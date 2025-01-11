@@ -17,7 +17,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.drawwithar.core.common.Const
@@ -31,7 +33,7 @@ import kotlin.math.sin
 fun DrawingImage(
     modifier: Modifier = Modifier,
     viewModel: DrawingViewModel,
-    src: Uri,
+    imageSrc: Any,
     initialAlpha: Float = Const.OpacitySlider.INITIAL_VALUE
 ) {
     val drawingImageOrientation by viewModel.drawingImageOrientation.collectAsState()
@@ -62,7 +64,6 @@ fun DrawingImage(
         Modifier.pointerInput(Unit) {
             detectTransformGestures { _, pan, zoom, rotate ->
                 viewModel.updateScale(scale * zoom)
-
 
                 val adjustedRotate = rotate * flipScaleX * flipScaleY
                 viewModel.updateRotation(rotation + adjustedRotate)
@@ -99,7 +100,7 @@ fun DrawingImage(
                 )
                 .then(gestureModifier)
             ,
-            painter = rememberAsyncImagePainter(src),
+            painter = if(imageSrc is Uri) rememberAsyncImagePainter(imageSrc) else (imageSrc as Painter),
             contentDescription = "Captured image",
             alpha = initialAlpha // change alpha for transparency
         )

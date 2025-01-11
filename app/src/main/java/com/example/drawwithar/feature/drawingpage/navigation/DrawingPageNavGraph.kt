@@ -25,13 +25,14 @@ sealed class DrawingPageRoutes(val route: String) {
     ExperimentalCoroutinesApi::class
 )
 fun NavGraphBuilder.drawingPageNavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: DrawingViewModel
 ) {
     navigation(startDestination = DrawingPageRoutes.DrawingPage.route, route = DRAWING_PAGE_GRAPH) {
         composable(
             DrawingPageRoutes.DrawingPage.route,
         ) {
-            val viewModel = hiltViewModel<DrawingViewModel>()
+
             DrawingScreen(
                 navController = navController,
                 viewModel = viewModel

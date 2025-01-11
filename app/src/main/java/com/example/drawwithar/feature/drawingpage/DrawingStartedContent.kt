@@ -23,7 +23,7 @@ fun DrawingStartedContent(
     modifier: Modifier = Modifier,
     viewModel: DrawingViewModel,
     isStartDrawing: Boolean,
-    imageUri: Uri,
+    imageUri: Any,
     alphaValue: Float,
     isOpacitySliderVisible: Boolean
 ) {
@@ -37,7 +37,7 @@ fun DrawingStartedContent(
                 .align(Alignment.TopCenter)
                 .padding(16.dp),
             viewModel = viewModel,
-            src = imageUri,
+            imageSrc = imageUri,
             initialAlpha = alphaValue,
         )
 

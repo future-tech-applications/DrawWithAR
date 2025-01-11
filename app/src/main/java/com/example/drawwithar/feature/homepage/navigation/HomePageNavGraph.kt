@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import coil.annotation.ExperimentalCoilApi
+import com.example.drawwithar.feature.drawingpage.DrawingViewModel
 import com.example.drawwithar.feature.drawingpage.templates
 import com.example.drawwithar.feature.homepage.HomeScreen
 import com.example.drawwithar.feature.homepage.SeeAllPage
@@ -26,13 +27,14 @@ sealed class HomePageRoutes(val route: String) {
  */
 
 fun NavGraphBuilder.homePageNavGraph(
+    drawingViewModel: DrawingViewModel,
     navController: NavHostController
 ) {
     navigation(startDestination = HomePageRoutes.HomePage.route, route = HOME_PAGE_GRAPH) {
         composable(
             HomePageRoutes.HomePage.route,
         ) {
-            HomeScreen(navController)
+            HomeScreen(drawingViewModel = drawingViewModel, navController)
         }
 
         composable(
@@ -48,6 +50,7 @@ fun NavGraphBuilder.homePageNavGraph(
 
             }
                 SeeAllPage(
+                    drawingViewModel = drawingViewModel,
                     navController = navController,
                     title = title,
                     imagesList = imagesList

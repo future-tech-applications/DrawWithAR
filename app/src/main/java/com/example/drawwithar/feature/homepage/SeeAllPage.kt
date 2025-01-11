@@ -29,11 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.ui.components.SquareImageHolder
+import com.example.drawwithar.feature.drawingpage.DrawingViewModel
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.navigateTo
 
 @Composable
 fun SeeAllPage(
+    drawingViewModel: DrawingViewModel,
     navController: NavHostController,
     title: String,
     imagesList: List<Any>,
@@ -76,6 +78,8 @@ fun SeeAllPage(
                     items(imagesList.size) { index ->
                         val image = imagesList[index]
                         SquareImageHolder(
+                            drawingViewModel = drawingViewModel,
+                            navController = navController,
                             image = painterResource(id = image as Int), // Adjust for `Uri` if needed
                             modifier = Modifier
                                 .fillMaxWidth()
