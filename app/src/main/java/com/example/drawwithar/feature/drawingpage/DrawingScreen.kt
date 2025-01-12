@@ -35,7 +35,7 @@ fun DrawingScreen(
     val sharedViewModel = getSharedViewModel()
 
     // to get image from gallery
-    val showGallery by viewModel.showGallery.collectAsState()
+    val showGallery by sharedViewModel.showGallery.collectAsState()
 
     // to store image for drawing in this variable
     val imageUri by sharedViewModel.imageUri.collectAsState()
@@ -106,7 +106,7 @@ fun DrawingScreen(
                     modifier = Modifier,
                     onImageUri = {
                         sharedViewModel.selectImage(it)
-                        viewModel.toggleShowGallery()
+                        sharedViewModel.toggleShowGallery()
                     }
                 )
             } else {

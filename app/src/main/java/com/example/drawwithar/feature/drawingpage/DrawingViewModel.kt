@@ -87,18 +87,6 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
     private val _isDrawingImageFrozen = MutableStateFlow(false)
     val isDrawingImageFrozen: StateFlow<Boolean> = _isDrawingImageFrozen
 
-    // state for if gallery open
-    private val _showGallery = MutableStateFlow(false)
-    val showGallery: StateFlow<Boolean> = _showGallery
-
-    // state for if image chosen or captured
-    private val _imageUri = MutableStateFlow(EMPTY_IMAGE_URI)
-    val imageUri: StateFlow<Any> = _imageUri
-
-    // state for if drawing started (an image choosen or captured and drawing started)
-    private val _isStartDrawing = MutableStateFlow(false)
-    val isStartDrawing: StateFlow<Boolean> = _isStartDrawing
-
     // Alpha value for opacity slider
     private val _alphaValue = MutableStateFlow(Const.OpacitySlider.INITIAL_VALUE)
     val alphaValue: StateFlow<Float> = _alphaValue
@@ -197,15 +185,6 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
         }
     }
 
-//    // Logic for toggling drawing state (drawing started)
-//    fun toggleDrawing() {
-//        viewModelScope.launch {
-//            if (_isStartDrawing.value) {
-//                _imageUri.emit(EMPTY_IMAGE_URI)
-//            }
-//            _isStartDrawing.emit(!_isStartDrawing.value)
-//        }
-//    }
 
     // Logic for updating alpha value
     fun updateAlphaValue(alpha: Float) {
@@ -292,22 +271,6 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
         }
     }
 
-    // Logic for toggling opening gallery
-    fun toggleShowGallery() {
-        viewModelScope.launch {
-            _showGallery.value = !_showGallery.value
-        }
-    }
-
-//    // Logic for selecting an image (from gallery)
-//    fun selectImage(uri: Any) {
-//        viewModelScope.launch {
-//            _imageUri.emit(uri)
-//            if (uri != EMPTY_IMAGE_URI) {
-//                _isStartDrawing.emit(true)
-//            }
-//        }
-//    }
 
     // reset all the applied controls on drawing image
     fun resetDrawingImageStates() {

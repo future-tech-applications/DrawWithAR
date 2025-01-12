@@ -20,6 +20,17 @@ class SharedViewModel @Inject constructor() : ViewModel() {
     private val _isStartDrawing = MutableStateFlow(false)
     val isStartDrawing: StateFlow<Boolean> get() = _isStartDrawing
 
+    private val _showGallery = MutableStateFlow(false)
+    val showGallery: StateFlow<Boolean> = _showGallery
+
+
+    // Logic for toggling opening gallery
+    fun toggleShowGallery() {
+        viewModelScope.launch {
+            _showGallery.value = !_showGallery.value
+        }
+    }
+
     // Toggle drawing state
     fun toggleDrawing() {
         viewModelScope.launch {

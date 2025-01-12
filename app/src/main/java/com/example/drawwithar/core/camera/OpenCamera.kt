@@ -37,7 +37,7 @@ fun OpenCamera(
                 .padding(4.dp)
             ,
             onClick = {
-                viewModel.toggleShowGallery()
+                sharedViewModel.toggleShowGallery()
             }
         ) {
             Text("Select from Gallery")
