@@ -2,6 +2,7 @@ package com.example.drawwithar
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -33,56 +34,30 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         val drawingViewModel: DrawingViewModel by viewModels()
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(
-                Color(0xFF870046).toArgb(),
-                Color(0xFF4B0024).toArgb()
+            statusBarStyle = SystemBarStyle.dark(
+                Color.Transparent.toArgb()
             ),
         )
+
         setContent {
             val navController = rememberNavController()
-
             DrawWithARTheme {
                 DrawWithARNavHost(navController = navController, drawingViewModel = drawingViewModel)
-//                Scaffold(
-//                    topBar = {
-//                        CustomTopAppBar(
-//                            title =  "Draw with AR",
-//                            onBackPressed = {  },
-//                            isShowBackBtn = true,
-//                            actions = {
-//                                // => Button to Start or Finish Drawing
-//                                if(imageUri!= EMPTY_IMAGE_URI) {
-//                                    BorderedButton(
-//                                        text = if(isStartDrawing) "Finish" else "Start",
-//                                        onClick = {
-//                                            viewModel.toggleDrawing()
-//                                            viewModel.resetDrawingImageStates()
-//                                        }
-//                                    )
-//                                }
-//                            }
-//                        )
-//                    },
-//                    bottomBar = {
-//                        if (true) {
-//                            CustomBottomNavBar(navController = navController, bottomNavigationItems = getListOfBottomNavigationItems())
-//                        }
-//                    },
-//
-//
-//                )
-//                { innerPadding ->
-//                    Screen(modifier = Modifier.padding(innerPadding), name="Home")
-//                    //DrawingScreen(viewModel, innerPadding)
-//                }
-
             }
         }
+
     }
+
+    @Deprecated("This method has been deprecated in favor of using the OnBackPressedDispatcher ")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
+
 }
 
