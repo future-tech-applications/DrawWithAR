@@ -115,7 +115,6 @@ fun DrawingScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding),
-                    viewModel = viewModel
                 )
             }
         }

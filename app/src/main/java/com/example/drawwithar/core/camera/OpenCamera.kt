@@ -18,10 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalCoroutinesApi::class)
 @Composable
-fun OpenCamera(
-    modifier: Modifier = Modifier,
-    viewModel: DrawingViewModel
-) {
+fun OpenCamera(modifier: Modifier = Modifier) {
     val sharedViewModel = getSharedViewModel()
 
     Box(modifier = modifier) {
