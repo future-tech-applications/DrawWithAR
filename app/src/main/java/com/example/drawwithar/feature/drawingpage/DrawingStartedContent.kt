@@ -40,7 +40,7 @@ fun DrawingStartedContent(
         // 2 => Open and Overlay the Image on top of Camera Preview to draw the image
         DrawingImage(
             modifier = Modifier
-                .align(Alignment.Center)
+                .align(Alignment.TopCenter)
                 .padding(16.dp),
             viewModel = viewModel,
             imageSrc = imageUri,

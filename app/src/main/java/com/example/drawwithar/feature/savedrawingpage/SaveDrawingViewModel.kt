@@ -1,6 +1,10 @@
 package com.example.drawwithar.feature.savedrawingpage
 
+import android.content.ContentValues
+import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +13,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
+
+const val folderName: String = "DrawWithAR"
 
 @HiltViewModel
 class SaveDrawingViewModel @Inject constructor() : ViewModel() {
@@ -22,23 +29,70 @@ class SaveDrawingViewModel @Inject constructor() : ViewModel() {
     private val _isDrawingBeingReviewed = MutableStateFlow(false)
     val isDrawingBeingReviewed: StateFlow<Boolean> get() = _isDrawingBeingReviewed
 
+    // State for saving status
+    private val _isSaving = MutableStateFlow(false)
+    val isSaving: StateFlow<Boolean> get() = _isSaving
 
-    // Logic for toggling opening gallery
+    private val _saveResult = MutableStateFlow<Result<Unit>?>(null)
+    val saveResult: StateFlow<Result<Unit>?> get() = _saveResult
+
+    // Logic for toggling drawing review state
     fun toggleIsDrawingBeingReviewed() {
         viewModelScope.launch {
             _isDrawingBeingReviewed.value = !_isDrawingBeingReviewed.value
-            Log.d("Savedrawingviewmodle", "review state: ${isDrawingBeingReviewed.value}")
+            Log.d("SaveDrawingViewModel", "Review state: ${isDrawingBeingReviewed.value}")
         }
     }
 
-    // Save image in gallery
+    // Update preview image URI
     fun updatePreviewImageUri(uri: Uri) {
-        Log.d("SharedViewModel", "Selected image URI: $uri")
+        Log.d("SaveDrawingViewModel", "Selected image URI: $uri")
         viewModelScope.launch {
             _previewImageUri.emit(uri)
-            if (uri != EMPTY_IMAGE_URI) {
-                //_isStartDrawing.emit(true)
+        }
+    }
+
+    // Save image to gallery
+    fun saveImageToGallery(context: Context) {
+        val imageUri = previewImageUri.value
+        if (imageUri !is Uri || imageUri == EMPTY_IMAGE_URI) {
+            _saveResult.value = Result.failure(IllegalArgumentException("No image selected"))
+            return
+        }
+        viewModelScope.launch {
+            _isSaving.emit(true)
+            try {
+                val contentValues = ContentValues().apply {
+                    val relativePath = "Pictures/$folderName/"
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, "draw_with_ar_drawing_${System.currentTimeMillis()}.jpg")
+                    put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+                        Log.d("SaveDrawingViewModel", "Saving to path: $relativePath")
+
+                    }
+                }
+
+                val resolver = context.contentResolver
+                val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+                if (uri != null) {
+                    resolver.openOutputStream(uri)?.use { outputStream ->
+                        resolver.openInputStream(imageUri)?.copyTo(outputStream)
+                    }
+                    _saveResult.emit(Result.success(Unit))
+                    Log.d("SaveDrawingViewModel", "Image saved successfully")
+                } else {
+                    throw IOException("Failed to create MediaStore entry")
+                }
+            } catch (e: Exception) {
+                Log.e("SaveDrawingViewModel", "Error saving image", e)
+                _saveResult.emit(Result.failure(e))
+            } finally {
+                _isSaving.emit(false)
             }
         }
     }
+
+
 }

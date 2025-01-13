@@ -1,5 +1,7 @@
 package com.example.drawwithar.feature.homepage
 
+import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,12 +21,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
-import com.example.drawwithar.core.common.ui.components.SectionItemImageHolder
+import coil.compose.rememberAsyncImagePainter
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
+import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
+import com.example.drawwithar.core.common.ui.components.HomePageSectionItemHolder
+import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.navigateTo
 
@@ -35,6 +40,7 @@ fun SeeAllPage(
     imagesList: List<Any>,
     backgroundColor: Color = MaterialTheme.colorScheme.background
 ) {
+    val sharedViewModel = getSharedViewModel()
     Scaffold(
         topBar = {
             CustomTopAppBar(
@@ -70,19 +76,46 @@ fun SeeAllPage(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(imagesList.size) { index ->
-                        val image = imagesList[index]
-                        SectionItemImageHolder(
-                            navController = navController,
-                            image = painterResource(id = image as Int), // Adjust for `Uri` if needed
+                        val imageItem = imagesList[index]
+                        val image = if (imageItem is Uri) {
+                            rememberAsyncImagePainter(model = imageItem as Uri)
+                        } else {
+                            painterResource(id = imageItem as Int)
+                        }
+                        HomePageSectionItemHolder(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .aspectRatio(1f) // Ensures square shape
+                                .aspectRatio(1f)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.surface)
-                        )
+                                .background(MaterialTheme.colorScheme.surface),
+                            navController = navController,
+                            onClick = {
+                                sharedViewModel.selectImage(image)
+                                navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
+                            }
+                        ) {
+                            Image(
+                                painter = image,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        }
+                    }
+//                        val image = imagesList[index]
+//                        HomePageSectionItemHolder(
+//                            navController = navController,
+//                            image = painterResource(id = image as Int), // Adjust for `Uri` if needed
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .aspectRatio(1f) // Ensures square shape
+//                                .clip(RoundedCornerShape(12.dp))
+//                                .background(MaterialTheme.colorScheme.surface)
+//                        )
                     }
                 }
             }
         }
     }
-}
+

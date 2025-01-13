@@ -1,5 +1,6 @@
 package com.example.drawwithar.feature.homepage
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,10 +11,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,12 +35,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.drawwithar.R
+import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.ui.components.SectionedContent
 import com.example.drawwithar.core.common.ui.components.SquareAddButton
-import com.example.drawwithar.core.common.ui.components.SectionItemImageHolder
-import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
+import com.example.drawwithar.core.common.ui.components.HomePageSectionItemHolder
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.navigateTo
@@ -86,12 +90,13 @@ fun HomeScreen(
 
 
 @Composable
-fun MyDrawingsSection(
+fun HomePageDrawingsSection(
     navController: NavHostController,
     title: String = "",
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     imagesList: List<Any> = emptyList()
 ) {
+    val sharedViewModel = getSharedViewModel()
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -125,7 +130,7 @@ fun MyDrawingsSection(
             if (title == "Favorites" && imagesList.isEmpty()) {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
-                    text = "Nothing to Show",
+                    text = "No items to display",
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                     fontSize = MaterialTheme.typography.titleSmall.fontSize
                 )
@@ -135,12 +140,42 @@ fun MyDrawingsSection(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(16.dp)
             ) {
+                item{
+                    if (title == "My Drawings" && imagesList.isNotEmpty()) {
+                        HomePageSectionItemHolder(
+                            navController = navController,
+                            onClick = { navController.navigateTo(DrawingPageRoutes.DrawingPage.route) }
+                        ) {
+                            SquareAddButton(modifier = Modifier
+                                .fillMaxSize(0.4f)
+                                .align(Alignment.Center)
+                            ) {
+                                navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
+                            }
+                        }
+                    }
+                }
                 items(imagesList.size) { index ->
-                    val image = imagesList[index]
-                    SectionItemImageHolder(
-                        image = painterResource(id = image as Int),
+                    val imageItem = imagesList[index]
+                    val image = if (imageItem is Uri) {
+                        rememberAsyncImagePainter(model = imageItem as Uri)
+                    } else {
+                        painterResource(id = imageItem as Int)
+                    }
+                    HomePageSectionItemHolder(
                         navController = navController,
-                    )
+                        onClick = {
+                            sharedViewModel.selectImage(image)
+                            navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
+                        }
+                    ) {
+                        Image(
+                            painter = image,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
             }
         }

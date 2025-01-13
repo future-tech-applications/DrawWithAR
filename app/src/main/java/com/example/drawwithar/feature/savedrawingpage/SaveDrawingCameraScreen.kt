@@ -39,12 +39,6 @@ fun SaveDrawingCameraScreen(
     // save drawing viewmodel
     val saveDrawingViewModel = hiltViewModel<SaveDrawingViewModel>()
 
-    // to get image from gallery
-    val showGallery by sharedViewModel.showGallery.collectAsState()
-
-    // to store image for drawing in this variable
-    val imageUri by sharedViewModel.imageUri.collectAsState()
-
     // to check if drawing being reviewed to save
     val isDrawingBeingReviewed by saveDrawingViewModel.isDrawingBeingReviewed.collectAsState()
 
