@@ -9,16 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.annotation.ExperimentalCoilApi
 import com.example.drawwithar.core.camera.OpenCamera
 import com.example.drawwithar.core.gallery.OpenGallery
 import com.example.drawwithar.core.common.ui.components.BorderedButton
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
-import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
+import com.example.drawwithar.feature.savedrawingpage.navigation.SaveDrawingPageRoutes
 import com.example.drawwithar.util.navigateTo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -61,10 +62,8 @@ fun DrawingScreen(
                 title =  "Draw with AR",
                 onBackPressed = {
                     finishDrawing()
-                    navController.navigateTo(
-                        dest = HomePageRoutes.HomePage.route,
-                        removeCurrentPageOnPop = true,
-                        restorePageState = false,
+                    navController.navigate(
+                        HomePageRoutes.HomePage.route
                     )
                 },
                 isShowBackBtn = true,
@@ -72,9 +71,12 @@ fun DrawingScreen(
                     // => Button to Start or Finish Drawing
                     if(imageUri!= EMPTY_IMAGE_URI) {
                         BorderedButton(
-                            text = if(isStartDrawing) "Finish" else "Start",
+                            text = "Finish",
                             onClick = {
-                                finishDrawing()
+                                navController.navigate(
+                                    SaveDrawingPageRoutes.SaveDrawingCameraPage.route,
+                                    navOptions = NavOptions.Builder().setRestoreState(true).build(),
+                                )
                             }
                         )
                     }
@@ -102,7 +104,6 @@ fun DrawingScreen(
             // case1: Open Gallery explicitly to have an image
             if (showGallery) {
                 OpenGallery(
-
                     modifier = Modifier,
                     onImageUri = {
                         sharedViewModel.selectImage(it)

@@ -35,7 +35,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val drawingViewModel: DrawingViewModel by viewModels()
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge(
@@ -47,7 +46,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             DrawWithARTheme {
-                DrawWithARNavHost(navController = navController, drawingViewModel = drawingViewModel)
+                DrawWithARNavHost(navController = navController)
             }
         }
 

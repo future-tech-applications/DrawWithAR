@@ -31,15 +31,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.drawwithar.R
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.ui.components.SectionedContent
 import com.example.drawwithar.core.common.ui.components.SquareAddButton
-import com.example.drawwithar.core.common.ui.components.SquareImageHolder
+import com.example.drawwithar.core.common.ui.components.SectionItemImageHolder
 import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
-import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.navigateTo
@@ -48,9 +46,6 @@ import com.example.drawwithar.util.navigateTo
 fun HomeScreen(
     navController: NavHostController
 ) {
-
-    val sharedViewModel = getSharedViewModel()
-
     Scaffold(
         topBar = {
             CustomTopAppBar(
@@ -58,7 +53,6 @@ fun HomeScreen(
                 isShowBackBtn = false,
                 isShowMenuBtn = true,
                 menuComposable = {
-
                     Image(
                         painter = painterResource(id = R.drawable.ic_launcher_round_hd),
                         contentDescription = null,
@@ -86,16 +80,13 @@ fun HomeScreen(
             }
         },
     ) { padding ->
-        SectionedContent(sharedViewModel, navController, padding)
+        SectionedContent(navController, padding)
     }
 }
 
 
-
-
 @Composable
 fun MyDrawingsSection(
-    sharedViewModel: SharedViewModel,
     navController: NavHostController,
     title: String = "",
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
@@ -146,8 +137,7 @@ fun MyDrawingsSection(
             ) {
                 items(imagesList.size) { index ->
                     val image = imagesList[index]
-                    SquareImageHolder(
-                        sharedViewModel = sharedViewModel,
+                    SectionItemImageHolder(
                         image = painterResource(id = image as Int),
                         navController = navController,
                     )
@@ -156,68 +146,6 @@ fun MyDrawingsSection(
         }
     }
 
-
-    @Composable
-    fun TemplatesSection() {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Templates", style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    "See all",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable { /* Action */ }
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .background(
-                        MaterialTheme.colorScheme.surfaceContainer,
-                        RoundedCornerShape(8.dp)
-                    )
-            ) {
-                // Placeholder for templates
-            }
-        }
-    }
-
-    @Composable
-    fun FavoritesSection() {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Favorites", style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    "See all",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable { /* Action */ }
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .background(
-                        MaterialTheme.colorScheme.surfaceContainer,
-                        RoundedCornerShape(8.dp)
-                    )
-            ) {
-                // Placeholder for templates
-            }
-        }
-    }
 }
 
 

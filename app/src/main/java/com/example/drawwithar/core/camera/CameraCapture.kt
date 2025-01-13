@@ -100,29 +100,26 @@ fun CameraCapture(
                 )
             }
 
-            Box {
-                CameraPreview(
-                    modifier = Modifier.fillMaxSize(),
-                    onUseCase = {
-                        previewUseCase = it
+            CameraPreview(
+                modifier = Modifier.fillMaxSize(),
+                onUseCase = {
+                    previewUseCase = it
+                }
+            )
+
+            // Show capture button only if camera is not drawing
+            if (!isDrawing) {
+                CapturePictureButton(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .padding(16.dp)
+                        .align(Alignment.BottomCenter),
+                    onClick = {
+                        coroutineScope.launch {
+                            onImageFile(imageCaptureUseCase.takePicture(context.executor))
+                        }
                     }
                 )
-
-                // Show capture button only if camera is not drawing
-                if (!isDrawing) {
-                    CapturePictureButton(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .padding(16.dp)
-                            .align(Alignment.BottomCenter),
-                        onClick = {
-                            coroutineScope.launch {
-                                onImageFile(imageCaptureUseCase.takePicture(context.executor))
-                            }
-                        }
-                    )
-                }
-
             }
 
             // listen to flash light toggle event

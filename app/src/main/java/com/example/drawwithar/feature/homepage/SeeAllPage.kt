@@ -21,11 +21,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
-import com.example.drawwithar.core.common.ui.components.SquareImageHolder
-import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
+import com.example.drawwithar.core.common.ui.components.SectionItemImageHolder
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.navigateTo
@@ -37,8 +35,6 @@ fun SeeAllPage(
     imagesList: List<Any>,
     backgroundColor: Color = MaterialTheme.colorScheme.background
 ) {
-    val sharedViewModel = getSharedViewModel()
-
     Scaffold(
         topBar = {
             CustomTopAppBar(
@@ -75,8 +71,7 @@ fun SeeAllPage(
                 ) {
                     items(imagesList.size) { index ->
                         val image = imagesList[index]
-                        SquareImageHolder(
-                            sharedViewModel = sharedViewModel,
+                        SectionItemImageHolder(
                             navController = navController,
                             image = painterResource(id = image as Int), // Adjust for `Uri` if needed
                             modifier = Modifier

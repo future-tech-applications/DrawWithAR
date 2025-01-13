@@ -33,13 +33,14 @@ fun DrawingStartedContent(
     val sharedViewModel = getSharedViewModel()
 
     Box(modifier = modifier) {
+
         // 1 => Camera Preview to open running camera
         if(isStartDrawing) CameraCapture(modifier = Modifier.fillMaxSize(), isDrawing = isStartDrawing)
 
         // 2 => Open and Overlay the Image on top of Camera Preview to draw the image
         DrawingImage(
             modifier = Modifier
-                .align(Alignment.TopCenter)
+                .align(Alignment.Center)
                 .padding(16.dp),
             viewModel = viewModel,
             imageSrc = imageUri,

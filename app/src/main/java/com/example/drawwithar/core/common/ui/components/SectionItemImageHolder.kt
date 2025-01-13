@@ -18,17 +18,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
+import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
 import com.example.drawwithar.util.navigateTo
 
 @Composable
-fun SquareImageHolder(
-    sharedViewModel: SharedViewModel,
+fun SectionItemImageHolder(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     image: Painter,
     backgroundColor: Color = MaterialTheme.colorScheme.surface
 ) {
+    val sharedViewModel = getSharedViewModel()
     Box(
         modifier = modifier
             .size(120.dp)
