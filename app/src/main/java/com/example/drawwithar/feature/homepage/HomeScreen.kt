@@ -22,7 +22,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,6 +41,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.drawwithar.R
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
+import com.example.drawwithar.core.common.ui.components.ColorConstants
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.ui.components.SectionedContent
 import com.example.drawwithar.core.common.ui.components.SquareAddButton
@@ -76,13 +80,9 @@ fun HomeScreen(
         },
         bottomBar = {  },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navController.navigateTo(DrawingPageRoutes.DrawingPage.route) },
-                shape = CircleShape,
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
-            }
+
         },
+        floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
         SectionedContent(navController, padding)
     }
@@ -93,7 +93,7 @@ fun HomeScreen(
 fun HomePageDrawingsSection(
     navController: NavHostController,
     title: String = "",
-    backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    backgroundColor: Color = ColorConstants.HOME_SECTION_BACKGROUND,
     imagesList: List<Any> = emptyList()
 ) {
     val sharedViewModel = getSharedViewModel()
@@ -143,7 +143,6 @@ fun HomePageDrawingsSection(
                 item{
                     if (title == "My Drawings" && imagesList.isNotEmpty()) {
                         HomePageSectionItemHolder(
-                            navController = navController,
                             onClick = { navController.navigateTo(DrawingPageRoutes.DrawingPage.route) }
                         ) {
                             SquareAddButton(modifier = Modifier
@@ -163,7 +162,6 @@ fun HomePageDrawingsSection(
                         painterResource(id = imageItem as Int)
                     }
                     HomePageSectionItemHolder(
-                        navController = navController,
                         onClick = {
                             sharedViewModel.selectImage(image)
                             navController.navigateTo(DrawingPageRoutes.DrawingPage.route)

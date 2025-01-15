@@ -33,7 +33,7 @@ fun NavGraphBuilder.homePageNavGraph(
         }
 
         composable(
-            route = HomePageRoutes.SeeAllPage.route + "{title}", //"see_all_page/{title}"
+            route = HomePageRoutes.SeeAllPage.route + "{title}",
             arguments = listOf(navArgument("title") { type = NavType.StringType })
         ) { backStackEntry ->
             val title = backStackEntry.arguments?.getString("title") ?: ""

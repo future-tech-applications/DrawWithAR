@@ -17,7 +17,6 @@ import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 
 @Composable
 fun HomePageSectionItemHolder(
-    navController: NavHostController,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     onClick: () -> Unit = {},

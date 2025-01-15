@@ -32,22 +32,18 @@ fun SectionedContent(navController: NavHostController, padding: PaddingValues) {
         HomePageDrawingsSection(
             title = "My Drawings",
             navController = navController,
-            backgroundColor = Color(0xFFFFE0E0),
             imagesList = savedDrawingsList
         )
         Spacer(modifier = Modifier.height(16.dp))
         HomePageDrawingsSection(
             title = "Favorites",
             navController = navController,
-            backgroundColor = Color(0xFFFFE0E0)
         )
         Spacer(modifier = Modifier.height(16.dp))
-
         HomePageDrawingsSection(
             title = "Templates",
             navController = navController,
             imagesList = templates,
-            backgroundColor = Color(0xFFFFE0E0)
         )
     }
 }

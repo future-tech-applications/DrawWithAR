@@ -88,7 +88,6 @@ fun SeeAllPage(
                                 .aspectRatio(1f)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(MaterialTheme.colorScheme.surface),
-                            navController = navController,
                             onClick = {
                                 sharedViewModel.selectImage(image)
                                 navController.navigateTo(DrawingPageRoutes.DrawingPage.route)

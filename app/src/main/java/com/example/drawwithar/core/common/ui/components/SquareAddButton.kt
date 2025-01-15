@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -25,8 +26,6 @@ fun SquareAddButton(
     onClick: () -> Unit = {}
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
-    val surfaceContainerColor = MaterialTheme.colorScheme.surfaceVariant
-
     Box(
         modifier = modifier
             .fillMaxHeight(0.35f)
@@ -39,8 +38,8 @@ fun SquareAddButton(
         Icon(
             imageVector = Icons.Default.Add,
             contentDescription = "Add",
-            tint = surfaceContainerColor,
-            modifier = Modifier.fillMaxSize(0.8f) // Icon fills up 80% of the parent
+            tint = MaterialTheme.colorScheme.background,
+            modifier = Modifier.fillMaxSize(0.7f) // Icon fills up 80% of the parent
         )
     }
 }
