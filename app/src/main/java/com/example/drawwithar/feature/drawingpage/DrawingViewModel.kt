@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import android.net.Uri
-import android.util.Log
 import com.example.drawwithar.R
 import com.example.drawwithar.core.common.Const
 import com.example.drawwithar.core.common.model.BottomBarItemModel
@@ -106,6 +105,22 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
     // visibility of the flip action items
     private val _isFlipActionVisible = MutableStateFlow(Const.FlipAction.IS_VISIBLE)
     val isFlipActionVisible: StateFlow<Boolean> = _isFlipActionVisible
+
+    // visibility of the opacity slider
+    private val _isExitConfirmDialogOpened = MutableStateFlow(false)
+    val isExitConfirmDialogOpened: StateFlow<Boolean> = _isExitConfirmDialogOpened
+
+    // visibility of the opacity slider
+    private val _isDrawingStateResetDialogOpened = MutableStateFlow(false)
+    val isDrawingStateResetDialogOpened: StateFlow<Boolean> = _isDrawingStateResetDialogOpened
+
+    fun updateExitConfirmDialogOpened(value: Boolean) {
+        _isExitConfirmDialogOpened.value = value
+    }
+
+    fun updateResetDrawingConfirmDialogOpened(value: Boolean) {
+        _isDrawingStateResetDialogOpened.value = value
+    }
 
     // initial states of drawing control items
     suspend fun initializeDrawingControlItemStates(size: Int) {
@@ -212,7 +227,7 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
                     toggleFreezeState()
                 }
                 4 -> {
-                    resetDrawingImageStates()
+                    updateResetDrawingConfirmDialogOpened(true)
                 }
             }
         }

@@ -1,14 +1,19 @@
 package com.example.drawwithar.feature.drawingpage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import coil.annotation.ExperimentalCoilApi
@@ -17,6 +22,8 @@ import com.example.drawwithar.core.gallery.OpenGallery
 import com.example.drawwithar.core.common.ui.components.BorderedButton
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
+import com.example.drawwithar.core.common.ui.components.ConfirmationDialog
+import com.example.drawwithar.core.common.ui.components.TakePhotoDialog
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.feature.savedrawingpage.navigation.SaveDrawingPageRoutes
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -48,21 +55,26 @@ fun DrawingScreen(
     // to check if opacity slider is visible or not
     val isOpacitySliderVisible by viewModel.isOpacitySliderVisible.collectAsState()
 
+    // to check if back button pressed
+    val isExitConfirmDialogOpened by viewModel.isExitConfirmDialogOpened.collectAsState()
+
+    // to check if reset drawing option pressed
+    val isDrawingStateResetDialogOpened by viewModel.isDrawingStateResetDialogOpened.collectAsState()
+
+    // on finish drawing dialog state
+    var isTakeAPhotoDialogOpened = rememberSaveable { mutableStateOf(false) }
+
     fun finishDrawing() {
         sharedViewModel.toggleDrawing()
         viewModel.resetDrawingImageStates()
     }
-
 
     Scaffold(
         topBar = {
             CustomTopAppBar(
                 title =  "Draw with AR",
                 onBackPressed = {
-                    finishDrawing()
-                    navController.navigate(
-                        HomePageRoutes.HomePage.route
-                    )
+                    viewModel.updateExitConfirmDialogOpened(true)
                 },
                 isShowBackBtn = true,
                 actions = {
@@ -71,10 +83,11 @@ fun DrawingScreen(
                         BorderedButton(
                             text = "Finish",
                             onClick = {
-                                navController.navigate(
-                                    SaveDrawingPageRoutes.SaveDrawingCameraPage.route,
-                                    navOptions = NavOptions.Builder().setRestoreState(true).build(),
-                                )
+                                isTakeAPhotoDialogOpened.value = true
+//                                navController.navigate(
+//                                    SaveDrawingPageRoutes.SaveDrawingCameraPage.route,
+//                                    navOptions = NavOptions.Builder().setRestoreState(true).build(),
+//                                )
                             }
                         )
                     }
@@ -83,6 +96,45 @@ fun DrawingScreen(
                  },
         )
     { innerPadding ->
+
+
+
+
+
+        // show confirmation dialog on back press
+        if(isExitConfirmDialogOpened) {
+            ConfirmationDialog(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Confirm Exit",
+                text = "Are you sure you want to exit?",
+                onConfirm = {
+                    navController.navigate(
+                        HomePageRoutes.HomePage.route
+                    )
+                    finishDrawing()
+                    viewModel.updateExitConfirmDialogOpened(false)
+                },
+                onCancel = {
+                    viewModel.updateExitConfirmDialogOpened(false)
+                }
+            )
+        }
+
+        // show confirmation dialog drawing item state reset
+        if(isDrawingStateResetDialogOpened) {
+            ConfirmationDialog(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Reset Changes",
+                text = "Any changes applied on drawing image will be reset. Are you sure resetting?",
+                onConfirm = {
+                    viewModel.resetDrawingImageStates()
+                    viewModel.updateResetDrawingConfirmDialogOpened(false)
+                },
+                onCancel = {
+                    viewModel.updateResetDrawingConfirmDialogOpened(false)
+                }
+            )
+        }
         // if image uri is not empty, show drawing started content
         if (imageUri != EMPTY_IMAGE_URI) {
             DrawingStartedContent(
@@ -94,8 +146,18 @@ fun DrawingScreen(
                 imageUri = imageUri,
                 alphaValue = alphaValue,
                 isOpacitySliderVisible = isOpacitySliderVisible,
-                isStartDrawing = isStartDrawing
+                isStartDrawing = isStartDrawing,
             )
+
+            // on finish drawing dialog
+            if(isTakeAPhotoDialogOpened.value) {
+                TakePhotoDialog(
+                    showDialog = isTakeAPhotoDialogOpened.value,
+                    onDismiss = {  },
+                    onTakePhotoClick = {  },
+                    title = "Take a photo of drawing"
+                )
+            }
         }
         // if image uri is empty, show camera preview
         else {

@@ -75,7 +75,6 @@ fun HomeScreen(
                                 1.dp,
                                 MaterialTheme.colorScheme.background,
                                 CircleShape
-
                             )
                     )
                 }

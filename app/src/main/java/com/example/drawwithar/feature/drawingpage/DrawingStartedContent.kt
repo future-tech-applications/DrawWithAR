@@ -3,6 +3,7 @@ package com.example.drawwithar.feature.drawingpage
 import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,9 +15,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.drawwithar.core.camera.CameraCapture
 import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
+import com.example.drawwithar.core.common.ui.components.ConfirmationDialog
 import com.example.drawwithar.feature.drawingpage.model.OpacitySliderModel
 import com.example.drawwithar.feature.drawingpage.uicomponent.DrawingControlSection
 import com.example.drawwithar.feature.drawingpage.uicomponent.DrawingImage
+import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -28,12 +31,11 @@ fun DrawingStartedContent(
     isStartDrawing: Boolean,
     imageUri: Any,
     alphaValue: Float,
-    isOpacitySliderVisible: Boolean
+    isOpacitySliderVisible: Boolean,
 ) {
     val sharedViewModel = getSharedViewModel()
 
     Box(modifier = modifier) {
-
         // 1 => Camera Preview to open running camera
         if(isStartDrawing) CameraCapture(modifier = Modifier.fillMaxSize(), isDrawing = isStartDrawing)
 
