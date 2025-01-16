@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.drawwithar.feature.drawingpage.EMPTY_IMAGE_URI
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -59,7 +60,7 @@ class SaveDrawingViewModel @Inject constructor() : ViewModel() {
             _saveResult.value = Result.failure(IllegalArgumentException("No image selected"))
             return
         }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _isSaving.emit(true)
             try {
                 val contentValues = ContentValues().apply {

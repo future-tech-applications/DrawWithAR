@@ -6,7 +6,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import coil.annotation.ExperimentalCoilApi
 import com.example.drawwithar.feature.savedrawingpage.SaveDrawingCameraScreen
-import com.example.drawwithar.feature.savedrawingpage.SaveDrawingReviewScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 

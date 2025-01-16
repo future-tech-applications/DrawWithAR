@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.annotation.ExperimentalCoilApi
 import com.example.drawwithar.core.camera.OpenCamera
 import com.example.drawwithar.core.gallery.OpenGallery
@@ -20,7 +19,6 @@ import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.feature.savedrawingpage.navigation.SaveDrawingPageRoutes
-import com.example.drawwithar.util.navigateTo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -39,7 +37,7 @@ fun DrawingScreen(
     val showGallery by sharedViewModel.showGallery.collectAsState()
 
     // to store image for drawing in this variable
-    val imageUri by sharedViewModel.imageUri.collectAsState()
+    val imageUri by sharedViewModel.selectedImageSrcForDrawing.collectAsState()
 
     // to check if drawing started or not (if image uri is not empty, drawing started)
     val isStartDrawing by sharedViewModel.isStartDrawing.collectAsState()
@@ -106,7 +104,7 @@ fun DrawingScreen(
                 OpenGallery(
                     modifier = Modifier,
                     onImageUri = {
-                        sharedViewModel.selectImage(it)
+                        sharedViewModel.selectImageForDrawing(it)
                         sharedViewModel.toggleShowGallery()
                     }
                 )

@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor() : ViewModel() {
-    // State for image URI
-    private val _imageUri = MutableStateFlow<Any>(EMPTY_IMAGE_URI)
-    val imageUri: StateFlow<Any> get() = _imageUri
+    // State for selected image for drawing
+    private val _selectedImageSrcForDrawing = MutableStateFlow<Any>(EMPTY_IMAGE_URI)
+    val selectedImageSrcForDrawing: StateFlow<Any> get() = _selectedImageSrcForDrawing
 
     // State for whether drawing has started
     private val _isStartDrawing = MutableStateFlow(false)
@@ -35,7 +35,7 @@ class SharedViewModel @Inject constructor() : ViewModel() {
     fun toggleDrawing() {
         viewModelScope.launch {
             if (_isStartDrawing.value) {
-                _imageUri.emit(EMPTY_IMAGE_URI)
+                _selectedImageSrcForDrawing.emit(EMPTY_IMAGE_URI)
             }
             _isStartDrawing.emit(!_isStartDrawing.value)
             Log.d("SharedViewModel", "isStartDrawing value: ${isStartDrawing.value}")
@@ -45,11 +45,11 @@ class SharedViewModel @Inject constructor() : ViewModel() {
     }
 
     // Select an image
-    fun selectImage(uri: Any) {
-        Log.d("SharedViewModel", "Selected image URI: $uri")
+    fun selectImageForDrawing(src: Any) {
+        Log.d("SharedViewModel", "Selected image URI: $src")
         viewModelScope.launch {
-            _imageUri.emit(uri)
-            if (uri != EMPTY_IMAGE_URI) {
+            _selectedImageSrcForDrawing.emit(src)
+            if (src != EMPTY_IMAGE_URI) {
                 _isStartDrawing.emit(true)
             }
         }

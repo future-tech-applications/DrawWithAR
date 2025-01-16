@@ -9,10 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.drawwithar.core.common.sharedviewmodel.SharedViewModel
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
-import com.example.drawwithar.feature.drawingpage.DrawingViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -25,7 +22,7 @@ fun OpenCamera(modifier: Modifier = Modifier) {
         // Open Camera
         CameraCapture(
             onImageFile = { file ->
-                sharedViewModel.selectImage(file.toUri())
+                sharedViewModel.selectImageForDrawing(file.toUri())
             }
         )
         Button(

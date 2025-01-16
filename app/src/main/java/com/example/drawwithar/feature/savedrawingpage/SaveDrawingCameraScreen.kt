@@ -6,23 +6,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import coil.annotation.ExperimentalCoilApi
 import com.example.drawwithar.core.camera.CameraCapture
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
-import com.example.drawwithar.feature.savedrawingpage.navigation.SaveDrawingPageRoutes
-import com.example.drawwithar.util.navigateTo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -60,7 +54,7 @@ fun SaveDrawingCameraScreen(
         ) {
             // show saving review
             if(isDrawingBeingReviewed) {
-                SaveDrawingReviewScreen(
+                SaveDrawingPreviewScreen(
                     navController = navController,
                     viewModel = saveDrawingViewModel,
                     modifier = Modifier

@@ -31,12 +31,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.drawwithar.R
@@ -52,7 +54,8 @@ import com.example.drawwithar.util.navigateTo
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: HomeViewModel
 ) {
     Scaffold(
         topBar = {
@@ -78,107 +81,12 @@ fun HomeScreen(
                 }
             )
         },
-        bottomBar = {  },
-        floatingActionButton = {
-
-        },
-        floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
-        SectionedContent(navController, padding)
+        SectionedContent(navController, padding, viewModel)
     }
 }
 
 
-@Composable
-fun HomePageDrawingsSection(
-    navController: NavHostController,
-    title: String = "",
-    backgroundColor: Color = ColorConstants.HOME_SECTION_BACKGROUND,
-    imagesList: List<Any> = emptyList()
-) {
-    val sharedViewModel = getSharedViewModel()
-    Column(modifier = Modifier.padding(16.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = title, fontSize = MaterialTheme.typography.titleMedium.fontSize,)
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                "See all",
-                fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable {
-                    navController.navigateTo(HomePageRoutes.SeeAllPage.route + title)
-                }
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .background(backgroundColor, RoundedCornerShape(8.dp))
-        ) {
-            if (title == "My Drawings" && imagesList.isEmpty()) {
-                SquareAddButton(
-                    modifier = Modifier.align(Alignment.Center),
-                    onClick = { navController.navigateTo(DrawingPageRoutes.DrawingPage.route) }
-                )
-            }
 
-            if (title == "Favorites" && imagesList.isEmpty()) {
-                Text(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = "No items to display",
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                    fontSize = MaterialTheme.typography.titleSmall.fontSize
-                )
-            }
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                item{
-                    if (title == "My Drawings" && imagesList.isNotEmpty()) {
-                        HomePageSectionItemHolder(
-                            onClick = { navController.navigateTo(DrawingPageRoutes.DrawingPage.route) }
-                        ) {
-                            SquareAddButton(modifier = Modifier
-                                .fillMaxSize(0.4f)
-                                .align(Alignment.Center)
-                            ) {
-                                navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
-                            }
-                        }
-                    }
-                }
-                items(imagesList.size) { index ->
-                    val imageItem = imagesList[index]
-                    val image = if (imageItem is Uri) {
-                        rememberAsyncImagePainter(model = imageItem as Uri)
-                    } else {
-                        painterResource(id = imageItem as Int)
-                    }
-                    HomePageSectionItemHolder(
-                        onClick = {
-                            sharedViewModel.selectImage(image)
-                            navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
-                        }
-                    ) {
-                        Image(
-                            painter = image,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-}
 
 

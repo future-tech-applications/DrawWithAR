@@ -29,8 +29,10 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.ui.components.HomePageSectionItemHolder
+import com.example.drawwithar.core.common.ui.components.HomeSections
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
+import com.example.drawwithar.util.ImageUtils
 import com.example.drawwithar.util.navigateTo
 
 @Composable
@@ -89,8 +91,13 @@ fun SeeAllPage(
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(MaterialTheme.colorScheme.surface),
                             onClick = {
-                                sharedViewModel.selectImage(image)
-                                navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
+                                if (title == HomeSections.MyDrawings.title) {
+                                    ImageUtils.openImageInGallery(navController.context, imageItem as Uri)
+                                } else {
+                                    // set selected image uri and navigate to drawing page
+                                    sharedViewModel.selectImageForDrawing(image)
+                                    navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
+                                }
                             }
                         ) {
                             Image(
@@ -102,16 +109,6 @@ fun SeeAllPage(
                             )
                         }
                     }
-//                        val image = imagesList[index]
-//                        HomePageSectionItemHolder(
-//                            navController = navController,
-//                            image = painterResource(id = image as Int), // Adjust for `Uri` if needed
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .aspectRatio(1f) // Ensures square shape
-//                                .clip(RoundedCornerShape(12.dp))
-//                                .background(MaterialTheme.colorScheme.surface)
-//                        )
                     }
                 }
             }

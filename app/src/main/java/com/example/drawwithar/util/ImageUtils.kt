@@ -1,12 +1,13 @@
 package com.example.drawwithar.util
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.example.drawwithar.feature.savedrawingpage.folderName
 
-object MediaStoreUtil {
+object ImageUtils {
 
     // get saved images list from storage
     fun fetchSavedImages(context: Context): List<Uri> {
@@ -33,6 +34,16 @@ object MediaStoreUtil {
         }
         Log.d("MediaStoreUtil", "Fetched ${imagesList.size} images")
         return imagesList
+    }
+
+    // open selected image from gallery
+    fun openImageInGallery(context: Context, imageUri: Uri) {
+        // Open the selected image in the phone's gallery
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(imageUri, "image/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(intent)
     }
 
 }

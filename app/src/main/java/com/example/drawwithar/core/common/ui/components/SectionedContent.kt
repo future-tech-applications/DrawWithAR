@@ -1,49 +1,57 @@
 package com.example.drawwithar.core.common.ui.components
 
-import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.drawwithar.feature.drawingpage.templates
-import com.example.drawwithar.feature.homepage.HomePageDrawingsSection
-import com.example.drawwithar.util.MediaStoreUtil.fetchSavedImages
+import com.example.drawwithar.feature.homepage.HomeViewModel
+import com.example.drawwithar.feature.homepage.uicomponent.HomePageDrawingsSection
 
 @Composable
-fun SectionedContent(navController: NavHostController, padding: PaddingValues) {
-    var savedDrawingsList by remember { mutableStateOf<List<Uri>>(emptyList()) }
-    LaunchedEffect(Unit) {
-        savedDrawingsList = fetchSavedImages(navController.context)
-    }
+fun SectionedContent(
+    navController: NavHostController,
+    padding: PaddingValues,
+    viewModel: HomeViewModel
+) {
+    val savedDrawingsList by viewModel.savedDrawingsList.collectAsState()
 
-    Column(modifier = Modifier.padding(padding)) {
+    Column(
+        modifier = Modifier
+            .padding(padding)
+            .verticalScroll(rememberScrollState())
+    ) {
         HomePageDrawingsSection(
-            title = "My Drawings",
+            title = HomeSections.MyDrawings.title,
             navController = navController,
-            imagesList = savedDrawingsList
+            imagesList =  savedDrawingsList.reversed() // show latest first
         )
         Spacer(modifier = Modifier.height(16.dp))
         HomePageDrawingsSection(
-            title = "Favorites",
+            title = HomeSections.Favorites.title,
             navController = navController,
         )
         Spacer(modifier = Modifier.height(16.dp))
         HomePageDrawingsSection(
-            title = "Templates",
+            title = HomeSections.Templates.title,
             navController = navController,
             imagesList = templates,
         )
     }
 }
+
+sealed class HomeSections(val title: String) {
+    data object MyDrawings : HomeSections("My Drawings")
+    data object Favorites : HomeSections("Favorites")
+    data object Templates : HomeSections("Templates")
+}
+
