@@ -23,7 +23,8 @@ fun SaveDrawingPreviewButtons (
     modifier: Modifier = Modifier,
     navController: NavHostController,
     onRetakeClick: () -> Unit = {},
-    onSaveClick: () -> Unit = {}
+    onSaveClick: () -> Unit = {},
+    onCancelClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier,
@@ -32,7 +33,7 @@ fun SaveDrawingPreviewButtons (
     ) {
         BorderedButton(
             text = "Cancel",
-            onClick = { navController.popBackStack() }
+            onClick = { onCancelClick() }
         )
         RetakePictureButton(
             modifier = Modifier

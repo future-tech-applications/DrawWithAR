@@ -1,7 +1,6 @@
 package com.example.drawwithar.feature.drawingpage
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,17 +12,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import coil.annotation.ExperimentalCoilApi
+import com.example.drawwithar.R
 import com.example.drawwithar.core.camera.OpenCamera
 import com.example.drawwithar.core.gallery.OpenGallery
 import com.example.drawwithar.core.common.ui.components.BorderedButton
 import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
+import com.example.drawwithar.core.common.ui.components.ColorConstants
 import com.example.drawwithar.core.common.ui.components.ConfirmationDialog
-import com.example.drawwithar.core.common.ui.components.TakePhotoDialog
+import com.example.drawwithar.core.common.ui.components.RichConfirmDialog
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.feature.savedrawingpage.navigation.SaveDrawingPageRoutes
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -151,11 +151,15 @@ fun DrawingScreen(
 
             // on finish drawing dialog
             if(isTakeAPhotoDialogOpened.value) {
-                TakePhotoDialog(
+                RichConfirmDialog(
                     showDialog = isTakeAPhotoDialogOpened.value,
-                    onDismiss = {  },
-                    onTakePhotoClick = {  },
-                    title = "Take a photo of drawing"
+                    imageSrc = R.drawable.draw_with_ar_launcher_icon_removebg,
+                    dismissText = "It's not finished yet",
+                    confirmText = "Take a photo",
+                    dialogColor = ColorConstants.RICH_CONFIRM_DIALOG_BACKGROUND_ACTION,
+                    onDismiss = { isTakeAPhotoDialogOpened.value = false },
+                    onConfirm = { navController.navigate(SaveDrawingPageRoutes.SaveDrawingCameraPage.route) },
+                    title = "Take a photo of the resulting drawing for your album to track your progress"
                 )
             }
         }
