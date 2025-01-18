@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import com.example.drawwithar.R
@@ -26,6 +25,7 @@ import com.example.drawwithar.core.common.ui.components.ConfirmationDialog
 import com.example.drawwithar.core.common.ui.components.RichConfirmDialog
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.feature.savedrawingpage.navigation.SaveDrawingPageRoutes
+import com.example.drawwithar.core.common.ui.components.CustomToast
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -62,7 +62,10 @@ fun DrawingScreen(
     val isDrawingStateResetDialogOpened by viewModel.isDrawingStateResetDialogOpened.collectAsState()
 
     // on finish drawing dialog state
-    var isTakeAPhotoDialogOpened = rememberSaveable { mutableStateOf(false) }
+    val isTakeAPhotoDialogOpened = rememberSaveable { mutableStateOf(false) }
+
+    // show toasts to describe actions
+    val toastData by viewModel.toastData.collectAsState()
 
     fun finishDrawing() {
         sharedViewModel.toggleDrawing()
@@ -84,10 +87,6 @@ fun DrawingScreen(
                             text = "Finish",
                             onClick = {
                                 isTakeAPhotoDialogOpened.value = true
-//                                navController.navigate(
-//                                    SaveDrawingPageRoutes.SaveDrawingCameraPage.route,
-//                                    navOptions = NavOptions.Builder().setRestoreState(true).build(),
-//                                )
                             }
                         )
                     }
@@ -96,11 +95,6 @@ fun DrawingScreen(
                  },
         )
     { innerPadding ->
-
-
-
-
-
         // show confirmation dialog on back press
         if(isExitConfirmDialogOpened) {
             ConfirmationDialog(
@@ -149,6 +143,13 @@ fun DrawingScreen(
                 isStartDrawing = isStartDrawing,
             )
 
+            // show toast
+            if (toastData.isVisible) {
+                CustomToast(
+                    toastData = toastData,
+                )
+            }
+
             // on finish drawing dialog
             if(isTakeAPhotoDialogOpened.value) {
                 RichConfirmDialog(
@@ -158,7 +159,9 @@ fun DrawingScreen(
                     confirmText = "Take a photo",
                     dialogColor = ColorConstants.RICH_CONFIRM_DIALOG_BACKGROUND_ACTION,
                     onDismiss = { isTakeAPhotoDialogOpened.value = false },
-                    onConfirm = { navController.navigate(SaveDrawingPageRoutes.SaveDrawingCameraPage.route) },
+                    onConfirm = {
+                        navController.navigate(SaveDrawingPageRoutes.SaveDrawingCameraPage.route)
+                    },
                     title = "Take a photo of the resulting drawing for your album to track your progress"
                 )
             }

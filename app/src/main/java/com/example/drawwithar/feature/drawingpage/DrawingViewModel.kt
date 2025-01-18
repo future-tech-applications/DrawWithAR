@@ -9,6 +9,7 @@ import android.net.Uri
 import com.example.drawwithar.R
 import com.example.drawwithar.core.common.Const
 import com.example.drawwithar.core.common.model.BottomBarItemModel
+import com.example.drawwithar.core.common.model.CustomToastData
 import com.example.drawwithar.core.eventbus.AppEvent
 import com.example.drawwithar.core.eventbus.AppEventBus
 import com.example.drawwithar.feature.drawingpage.model.DrawingImageOrientation
@@ -114,12 +115,39 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
     private val _isDrawingStateResetDialogOpened = MutableStateFlow(false)
     val isDrawingStateResetDialogOpened: StateFlow<Boolean> = _isDrawingStateResetDialogOpened
 
+    // check if  drawing state has been reset
+    private val _isDrawingStateReset = MutableStateFlow(false)
+    val isDrawingStateReset: StateFlow<Boolean> = _isDrawingStateReset
+
+    // visibility of the opacity slider
+    private val _toastData = MutableStateFlow(CustomToastData())
+    val toastData: StateFlow<CustomToastData> = _toastData
+
     fun updateExitConfirmDialogOpened(value: Boolean) {
         _isExitConfirmDialogOpened.value = value
     }
 
     fun updateResetDrawingConfirmDialogOpened(value: Boolean) {
         _isDrawingStateResetDialogOpened.value = value
+    }
+
+    private fun updateDrawingStateReset(value: Boolean) {
+        _isDrawingStateReset.value = value
+        if(isDrawingStateReset.value) {
+            updateShowToast(
+                CustomToastData(
+                    isVisible = true,
+                    message = "Changes has been reset",
+                    onDismiss = {
+                        updateShowToast(CustomToastData(isVisible = false))
+                    }
+                )
+            )
+        }
+    }
+
+    private fun updateShowToast(toastData: CustomToastData) {
+        _toastData.value = toastData
     }
 
     // initial states of drawing control items
@@ -160,11 +188,33 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
     private fun toggleFreezeState() {
         _hasChanges.value = true
         _isDrawingImageFrozen.value = !_isDrawingImageFrozen.value
+        updateShowToast(
+            CustomToastData(
+                isVisible = true,
+                message = if (_isDrawingImageFrozen.value) "Drawing Image Locked" else "Drawing Image Unlocked",
+                onDismiss = {
+                    updateShowToast(CustomToastData(isVisible = false))
+                }
+
+            )
+        )
     }
 
     // toggle drawing image opacity slider control visibility
     private fun toggleOpacitySlider() {
         _isOpacitySliderVisible.value = !_isOpacitySliderVisible.value
+        if(isOpacitySliderVisible.value) {
+            updateShowToast(
+                CustomToastData(
+                    isVisible = true,
+                    message = "Slide to adjust Opacity",
+                    onDismiss = {
+                        updateShowToast(CustomToastData(isVisible = false))
+                    }
+                )
+            )
+        }
+
     }
 
     // toggle to popup/hide the drawing image flip actions
@@ -178,7 +228,17 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
         viewModelScope.launch {
             _isFlashlightToggled.value = !_isFlashlightToggled.value
             appEventBus.emit(AppEvent.FlashLightToggledEvent(isFlashlightToggled.value))
+            updateShowToast(
+                CustomToastData(
+                    isVisible = true,
+                    message = if (isFlashlightToggled.value) "Flashlight ON" else "Flashlight OFF",
+                    onDismiss = {
+                        updateShowToast(CustomToastData(isVisible = false))
+                    }
+                )
+            )
         }
+
     }
 
     // handle when a drawing control item selected
@@ -256,6 +316,15 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
             DrawingImageOrientation.FLIPPED_BOTH -> DrawingImageOrientation.FLIPPED_VERTICAL
             else -> DrawingImageOrientation.FLIPPED_HORIZONTAL
         }
+        updateShowToast(
+            CustomToastData(
+                isVisible = true,
+                message = "Image flipped Horizontally",
+                onDismiss = {
+                    updateShowToast(CustomToastData(isVisible = false))
+                }
+            )
+        )
     }
 
     // handle vertical flip
@@ -266,6 +335,15 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
             DrawingImageOrientation.FLIPPED_BOTH -> DrawingImageOrientation.FLIPPED_HORIZONTAL
             else -> DrawingImageOrientation.FLIPPED_VERTICAL
         }
+        updateShowToast(
+            CustomToastData(
+                isVisible = true,
+                message = "Image flipped Vertically",
+                onDismiss = {
+                    updateShowToast(CustomToastData(isVisible = false))
+                }
+            )
+        )
     }
 
     // Logic for selecting a tab
@@ -306,6 +384,6 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
         _flipControlItemSelectedStates.value =
             List(flipControlItems.value.size) { index -> index == -1 }
         _hasChanges.value = false
-
+        updateDrawingStateReset(true)
     }
 }
