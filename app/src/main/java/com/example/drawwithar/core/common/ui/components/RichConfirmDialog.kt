@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -82,18 +83,14 @@ fun RichConfirmDialog(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-
                         // Title
                         Text(
                             text = title,
                             textAlign = TextAlign.Center,
-                            style = TextStyle(
-                                color = MaterialTheme.colorScheme.background,
-                                fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                                fontWeight = FontWeight.W400,
-
-                            ),
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.background,
+                            fontWeight = FontWeight.W400,
+                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                            style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -110,16 +107,13 @@ fun RichConfirmDialog(
 
                         // Dismiss Text
                         if(dismissText.isNotEmpty()) {
-
                             Text(
                                 text = dismissText,
                                 color = MaterialTheme.colorScheme.background,
-                                style = TextStyle(
-                                    color = MaterialTheme.colorScheme.background,
-                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                                    textDecoration = TextDecoration.Underline,
-                                    fontWeight = FontWeight.SemiBold,
-                                ),
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                textDecoration = TextDecoration.Underline,
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.titleMedium,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .wrapContentSize()

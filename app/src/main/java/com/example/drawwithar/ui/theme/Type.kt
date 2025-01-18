@@ -8,6 +8,7 @@ import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.googlefonts.Font
 import com.example.drawwithar.R
 
+// Signika Negative, Caveat, Comfortaa, Courgette, Fredoka
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
     providerPackage = "com.google.android.gms",
@@ -16,14 +17,14 @@ val provider = GoogleFont.Provider(
 
 val bodyFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Roboto Slab"),
+        googleFont = GoogleFont("Fredoka"),
         fontProvider = provider,
     )
 )
 
 val displayFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Roboto"),
+        googleFont = GoogleFont("Fredoka"),
         fontProvider = provider,
     )
 )
