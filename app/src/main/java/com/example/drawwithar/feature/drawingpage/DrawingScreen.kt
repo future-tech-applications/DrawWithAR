@@ -171,7 +171,9 @@ fun DrawingScreen(
             // case1: Open Gallery explicitly to have an image
             if (showGallery) {
                 OpenGallery(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
                     onImageUri = {
                         sharedViewModel.selectImageForDrawing(it)
                         sharedViewModel.toggleShowGallery()

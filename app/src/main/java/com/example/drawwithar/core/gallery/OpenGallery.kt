@@ -7,6 +7,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -47,10 +49,14 @@ fun OpenGallery(
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         Permission(
             permission = Manifest.permission.ACCESS_MEDIA_LOCATION,
-            rationale = "You want to read from photo gallery, so I'm going to have to ask for permission.",
+            rationale = "You said you want to read from photo gallery, so I'm going to have to ask for permission to access it.",
             permissionNotAvailableContent = {
-                Column(modifier) {
-                    Text("O noes! No Photo Gallery!")
+                Column(
+                    modifier.padding(8.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("O noes! Permission denied to open Photo Gallery! Allow it from Settings. Or just use Camera to capture an image for drawing.")
                     Spacer(modifier = Modifier.height(8.dp))
                     Row {
                         Button(

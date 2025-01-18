@@ -28,7 +28,5 @@ fun DrawWithARNavHost(
         homePageNavGraph(navController =  navController, viewModel = homeViewModel)
         drawingPageNavGraph(navController = navController)
         saveDrawingPageNavGraph(navController =  navController)
-
-
     }
 }

@@ -11,6 +11,7 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
 import androidx.camera.core.Preview
 import androidx.camera.core.UseCase
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -58,10 +59,14 @@ fun CameraCapture(
     // Ask for Camera permissions
     Permission(
         permission = Manifest.permission.CAMERA,
-        rationale = "You said you wanted a picture for drawing, so I'm going to have to ask for permission.",
+        rationale = "You said you wanted a picture for drawing, so I'm going to have to ask for permission to access the camera.",
         permissionNotAvailableContent = {
-            Column(modifier) {
-                Text("O noes! No Camera! Artist requires its tools!")
+            Column(
+                modifier.padding(8.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("O noes! Camera Permission Denied! Artist requires its tools! Please Allow it from Settings.")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {

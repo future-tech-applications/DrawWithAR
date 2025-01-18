@@ -21,6 +21,7 @@ fun OpenCamera(modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         // Open Camera
         CameraCapture(
+            modifier = Modifier.align(Alignment.Center),
             onImageFile = { file ->
                 sharedViewModel.selectImageForDrawing(file.toUri())
             }
