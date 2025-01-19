@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
-import com.example.drawwithar.util.navigateTo
 
 @Composable
 fun AddNewDrawingFAB(

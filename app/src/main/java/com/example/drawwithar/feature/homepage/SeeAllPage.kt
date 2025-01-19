@@ -33,7 +33,6 @@ import com.example.drawwithar.core.common.ui.components.HomeSections
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.ImageUtils
-import com.example.drawwithar.util.navigateTo
 
 @Composable
 fun SeeAllPage(
@@ -49,10 +48,7 @@ fun SeeAllPage(
                 title = title,
                 isShowBackBtn = true,
                 onBackPressed = {
-                    navController.navigateTo(
-                        dest =  HomePageRoutes.HomePage.route,
-                        removeCurrentPageOnPop = true
-                    )
+                    navController.popBackStack()
                 }
             )
         }
@@ -96,7 +92,7 @@ fun SeeAllPage(
                                 } else {
                                     // set selected image uri and navigate to drawing page
                                     sharedViewModel.selectImageForDrawing(image)
-                                    navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
+                                    navController.navigate(DrawingPageRoutes.DrawingPage.route)
                                 }
                             }
                         ) {

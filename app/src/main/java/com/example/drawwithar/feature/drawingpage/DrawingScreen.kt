@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.navOptions
 import coil.annotation.ExperimentalCoilApi
 import com.example.drawwithar.R
 import com.example.drawwithar.core.camera.OpenCamera
@@ -26,6 +27,7 @@ import com.example.drawwithar.core.common.ui.components.RichConfirmDialog
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.feature.savedrawingpage.navigation.SaveDrawingPageRoutes
 import com.example.drawwithar.core.common.ui.components.CustomToast
+import com.example.drawwithar.feature.drawingpage.navigation.DrawingScreenBackPressComposeHandler
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -95,6 +97,14 @@ fun DrawingScreen(
                  },
         )
     { innerPadding ->
+
+        /// handle back press for drawing screen
+        DrawingScreenBackPressComposeHandler(
+            viewModel = viewModel,
+            navHostController = navController
+        )
+
+
         // show confirmation dialog on back press
         if(isExitConfirmDialogOpened) {
             ConfirmationDialog(
@@ -102,9 +112,7 @@ fun DrawingScreen(
                 title = "Confirm Exit",
                 text = "Are you sure you want to exit?",
                 onConfirm = {
-                    navController.navigate(
-                        HomePageRoutes.HomePage.route
-                    )
+                    navController.popBackStack()
                     finishDrawing()
                     viewModel.updateExitConfirmDialogOpened(false)
                 },
@@ -154,7 +162,7 @@ fun DrawingScreen(
             if(isTakeAPhotoDialogOpened.value) {
                 RichConfirmDialog(
                     showDialog = isTakeAPhotoDialogOpened.value,
-                    imageSrc = R.drawable.draw_with_ar_launcher_icon_removebg,
+                    imageSrc = R.drawable.draw_with_ar_logo,
                     dismissText = "It's not finished yet",
                     confirmText = "Take a photo",
                     dialogColor = ColorConstants.RICH_CONFIRM_DIALOG_BACKGROUND_ACTION,

@@ -27,7 +27,7 @@ import com.example.drawwithar.core.common.model.CustomToastData
 @Composable
 fun CustomToast(
     toastData: CustomToastData = CustomToastData(message = "This is a custom toast!"),
-    icon: Painter? = painterResource(id = R.drawable.ic_launcher_round_hd),
+    icon: Painter? = painterResource(id = R.drawable.draw_with_ar_logo),
     backgroundColor: Color = MaterialTheme.colorScheme.background,
     textColor: Color = MaterialTheme.colorScheme.primary,
 ) {

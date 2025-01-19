@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.DrawWithARTheme
+import com.example.drawwithar.core.navigation.ComposeScreenBackPressHandler
 import com.example.drawwithar.core.navigation.DrawWithARNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,6 +27,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
+            // => On Hardware back button pressed logic
+            ComposeScreenBackPressHandler(
+                navController = navController,
+                activity = this@MainActivity,
+                backPressHandler = null
+            )
             DrawWithARTheme {
                 DrawWithARNavHost(navController = navController)
             }

@@ -1,8 +1,5 @@
 package com.example.drawwithar.util
 
-import android.os.Bundle
-import android.os.Parcelable
-import android.util.Log
 import androidx.navigation.NavHostController
 
 /**
@@ -25,4 +22,18 @@ fun NavHostController.navigateTo(
         launchSingleTop = launchPageAsSingleTop
         restoreState = restorePageState
     }
+}
+
+
+
+
+/**
+ * To check if the current destination is the start destination of the graph.
+ *
+ * @param startRoute start route to match against the current destination route.
+ * @return
+ *
+ */
+fun NavHostController.isOnStartDestination(startRoute: String): Boolean {
+    return currentBackStackEntry?.destination?.route == startRoute
 }

@@ -97,7 +97,7 @@ fun SaveDrawingPreviewScreen(
         if(isSaveDrawingDialogOpened.value) {
             RichConfirmDialog(
                 showDialog = isSaveDrawingDialogOpened.value,
-                imageSrc = R.drawable.draw_with_ar_launcher_icon_removebg,
+                imageSrc = R.drawable.draw_with_ar_logo,
                 dismissText = "Leave me here, am still drawing",
                 confirmText = "Take me HOME",
                 dialogColor = ColorConstants.RICH_CONFIRM_DIALOG_BACKGROUND_SUCCESS,

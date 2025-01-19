@@ -26,7 +26,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import coil.compose.rememberAsyncImagePainter
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.core.common.ui.components.ColorConstants
@@ -36,7 +35,6 @@ import com.example.drawwithar.core.common.ui.components.SquareAddButton
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.ImageUtils
-import com.example.drawwithar.util.navigateTo
 
 @Composable
 fun HomePageDrawingsSection(
@@ -59,7 +57,7 @@ fun HomePageDrawingsSection(
                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable {
-                    navController.navigateTo(HomePageRoutes.SeeAllPage.route + title)
+                    navController.navigate(HomePageRoutes.SeeAllPage.route + title)
                 }
             )
         }
@@ -76,7 +74,7 @@ fun HomePageDrawingsSection(
                     onClick = {
                         navController.navigate(
                             DrawingPageRoutes.DrawingPage.route,
-                            navOptions = NavOptions.Builder().setRestoreState(true).build()
+                            //navOptions = NavOptions.Builder().setRestoreState(true).build()
                         )
                     }
                 )
@@ -102,7 +100,7 @@ fun HomePageDrawingsSection(
                             onClick = {
                                 navController.navigate(
                                     DrawingPageRoutes.DrawingPage.route,
-                                    navOptions = NavOptions.Builder().setRestoreState(true).build()
+                                    //navOptions = NavOptions.Builder().setRestoreState(true).build()
                                 )
                             }
                         ) {
@@ -110,7 +108,7 @@ fun HomePageDrawingsSection(
                                 .fillMaxSize(0.4f)
                                 .align(Alignment.Center)
                             ) {
-                                navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
+                                navController.navigate(DrawingPageRoutes.DrawingPage.route)
                             }
                         }
                     }
@@ -133,7 +131,7 @@ fun HomePageDrawingsSection(
                             } else {
                                 // set selected image uri and navigate to drawing page
                                 sharedViewModel.selectImageForDrawing(image)
-                                navController.navigateTo(DrawingPageRoutes.DrawingPage.route)
+                                navController.navigate(DrawingPageRoutes.DrawingPage.route)
                             }
                         }
                     ) {
