@@ -37,6 +37,7 @@ fun NavGraphBuilder.homePageNavGraph(
         ) {
             LaunchedEffect(Unit) {
                 viewModel.fetchSavedImages(navController.context)
+                viewModel.fetchFavoriteImages()
             }
             HomeScreen(navController, viewModel)
         }

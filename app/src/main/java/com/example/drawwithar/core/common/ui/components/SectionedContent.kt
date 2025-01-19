@@ -1,5 +1,6 @@
 package com.example.drawwithar.core.common.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -23,8 +24,8 @@ fun SectionedContent(
     padding: PaddingValues,
     viewModel: HomeViewModel
 ) {
-    val savedDrawingsList by viewModel.savedDrawingsList.collectAsState()
-
+    val savedDrawingsList by viewModel.savedDrawingsList.collectAsState(initial = emptyList())
+    val favoriteDrawingsList by viewModel.favoriteDrawingsList.collectAsState(initial = emptyList())
     Column(
         modifier = Modifier
             .padding(padding)
@@ -39,6 +40,7 @@ fun SectionedContent(
         HomePageDrawingsSection(
             title = HomeSections.Favorites.title,
             navController = navController,
+            imagesList = favoriteDrawingsList
         )
         Spacer(modifier = Modifier.height(16.dp))
         HomePageDrawingsSection(

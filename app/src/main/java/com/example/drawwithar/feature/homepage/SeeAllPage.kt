@@ -31,7 +31,6 @@ import com.example.drawwithar.core.common.ui.components.CustomTopAppBar
 import com.example.drawwithar.core.common.ui.components.HomePageSectionItemHolder
 import com.example.drawwithar.core.common.ui.components.HomeSections
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
-import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
 import com.example.drawwithar.util.ImageUtils
 
 @Composable
@@ -94,7 +93,8 @@ fun SeeAllPage(
                                     sharedViewModel.selectImageForDrawing(image)
                                     navController.navigate(DrawingPageRoutes.DrawingPage.route)
                                 }
-                            }
+                            },
+                            itemSrc = imageItem
                         ) {
                             Image(
                                 painter = image,

@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
@@ -33,7 +34,9 @@ import com.example.drawwithar.core.common.ui.components.HomePageSectionItemHolde
 import com.example.drawwithar.core.common.ui.components.HomeSections
 import com.example.drawwithar.core.common.ui.components.SquareAddButton
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingPageRoutes
+import com.example.drawwithar.feature.homepage.HomeViewModel
 import com.example.drawwithar.feature.homepage.navigation.HomePageRoutes
+import com.example.drawwithar.room.DrawingEntity
 import com.example.drawwithar.util.ImageUtils
 
 @Composable
@@ -43,8 +46,8 @@ fun HomePageDrawingsSection(
     backgroundColor: Color = ColorConstants.HOME_SECTION_BACKGROUND,
     imagesList: List<Any> = emptyList()
 ) {
-
     val sharedViewModel = getSharedViewModel()
+    val viewModel =  hiltViewModel<HomeViewModel>()
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -72,14 +75,10 @@ fun HomePageDrawingsSection(
                 SquareAddButton(
                     modifier = Modifier.align(Alignment.Center),
                     onClick = {
-                        navController.navigate(
-                            DrawingPageRoutes.DrawingPage.route,
-                            //navOptions = NavOptions.Builder().setRestoreState(true).build()
-                        )
+                        navController.navigate(DrawingPageRoutes.DrawingPage.route)
                     }
                 )
             }
-
             if (title == HomeSections.Favorites.title && imagesList.isEmpty()) {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
@@ -94,19 +93,18 @@ fun HomePageDrawingsSection(
                 contentPadding = PaddingValues(16.dp)
             ) {
                 // first static item to be displayed
-                item {
-                    if (title == HomeSections.MyDrawings.title && imagesList.isNotEmpty()) {
+                if (title == HomeSections.MyDrawings.title && imagesList.isNotEmpty()) {
+                    item {
                         HomePageSectionItemHolder(
                             onClick = {
-                                navController.navigate(
-                                    DrawingPageRoutes.DrawingPage.route,
-                                    //navOptions = NavOptions.Builder().setRestoreState(true).build()
-                                )
-                            }
+                                navController.navigate(DrawingPageRoutes.DrawingPage.route)
+                            },
+                            itemSrc = null
                         ) {
-                            SquareAddButton(modifier = Modifier
-                                .fillMaxSize(0.4f)
-                                .align(Alignment.Center)
+                            SquareAddButton(
+                                modifier = Modifier
+                                    .fillMaxSize(0.4f)
+                                    .align(Alignment.Center)
                             ) {
                                 navController.navigate(DrawingPageRoutes.DrawingPage.route)
                             }
@@ -119,7 +117,7 @@ fun HomePageDrawingsSection(
                 val limitedList = imagesList.take(8)
                 items(limitedList.size) { index ->
                     val imageItem = imagesList[index]
-                    val image = if (imageItem is Uri) {
+                    val imageSrc = if (imageItem is Uri) {
                         rememberAsyncImagePainter(model = imageItem as Uri)
                     } else {
                         painterResource(id = imageItem as Int)
@@ -130,13 +128,23 @@ fun HomePageDrawingsSection(
                                 ImageUtils.openImageInGallery(navController.context, imageItem as Uri)
                             } else {
                                 // set selected image uri and navigate to drawing page
-                                sharedViewModel.selectImageForDrawing(image)
+                                sharedViewModel.selectImageForDrawing(imageSrc)
                                 navController.navigate(DrawingPageRoutes.DrawingPage.route)
                             }
+                        },
+                        itemSrc = imageItem,
+                        onFavoriteClick = {
+                            // add to favorite
+                            viewModel.insertDrawing(
+                                DrawingEntity(
+                                    uri = (imageItem as Uri).toString(),
+                                    isFavorite = true
+                                )
+                            )
                         }
                     ) {
                         Image(
-                            painter = image,
+                            painter = imageSrc,
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()

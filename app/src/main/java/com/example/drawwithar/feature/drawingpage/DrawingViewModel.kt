@@ -15,6 +15,8 @@ import com.example.drawwithar.core.eventbus.AppEventBus
 import com.example.drawwithar.feature.drawingpage.model.DrawingImageOrientation
 import com.example.drawwithar.feature.drawingpage.uicomponent.getListOfBottomControlItems
 import com.example.drawwithar.feature.drawingpage.uicomponent.getListOfFlipActionItems
+import com.example.drawwithar.room.DrawingDao
+import com.example.drawwithar.room.DrawingEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -155,6 +157,8 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
     // visibility of the opacity slider
     private val _toastData = MutableStateFlow(CustomToastData())
     val toastData: StateFlow<CustomToastData> = _toastData
+
+
 
     fun updateExitConfirmDialogOpened(value: Boolean) {
         _isExitConfirmDialogOpened.value = value
