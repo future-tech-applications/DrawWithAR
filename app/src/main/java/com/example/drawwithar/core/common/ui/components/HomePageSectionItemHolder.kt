@@ -14,37 +14,17 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-
-//@Composable
-//fun HomePageSectionItemHolder(
-//    modifier: Modifier = Modifier,
-//    backgroundColor: Color = MaterialTheme.colorScheme.surface,
-//    onClick: () -> Unit = {},
-//    content: @Composable () -> Unit = {}
-//) {
-//
-//    Box(
-//        modifier = modifier
-//            .size(120.dp)
-//            .clip(RoundedCornerShape(16.dp))
-//            .background(backgroundColor)
-//            .clickable(
-//                onClick = {
-//                    onClick()
-//                }
-//            )
-//        ,
-//        contentAlignment = Alignment.Center,
-//    ) {
-//        content()
-//    }
-//}
-
 
 @Composable
 fun HomePageSectionItemHolder(
@@ -53,9 +33,10 @@ fun HomePageSectionItemHolder(
     isFavorited: Boolean = false,
     itemSrc: Any?, // Src of the image
     onClick: () -> Unit = {},
-    onFavoriteClick: () -> Unit = {}, // Passes the URI of the item as String
+    onFavoriteClick: (Uri, Boolean, isFavorited: Boolean) -> Unit = {_, _, _ ->},
     content: @Composable () -> Unit = {}
 ) {
+    var isFavorite by remember { mutableStateOf(isFavorited) }
     Box(
         modifier = modifier
             .size(120.dp)
@@ -76,11 +57,14 @@ fun HomePageSectionItemHolder(
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(2.dp) // Padding to make space for icon to reside in
-                    .clickable { onFavoriteClick() }, // Click action for the favorite icon
+                    .clickable {
+                        isFavorite = !isFavorite
+                        onFavoriteClick(itemSrc, isFavorite, isFavorited)
+                    }, // Click action for the favorite icon
             ) {
                 Icon(
-                    imageVector = if (isFavorited) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                    contentDescription = if (isFavorited) "Unfavorite" else "Favorite",
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = if (isFavorite) "Unfavorite" else "Favorite",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )

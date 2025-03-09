@@ -47,17 +47,18 @@ fun NavGraphBuilder.homePageNavGraph(
             arguments = listOf(navArgument("title") { type = NavType.StringType })
         ) { backStackEntry ->
             val title = backStackEntry.arguments?.getString("title") ?: ""
+            val savedDrawingsLis = viewModel.savedDrawingsList.collectAsState().value.reversed()
+            val favoriteDrawingsList = viewModel.favoriteDrawingsList.collectAsState().value
 
             val imagesList: List<Any> = when (title) {
-                HomeSections.MyDrawings.title -> {
-                        viewModel.savedDrawingsList.collectAsState().value.reversed()
-                }
+                HomeSections.MyDrawings.title -> savedDrawingsLis
                 HomeSections.Templates.title -> templates
-                HomeSections.Favorites.title -> emptyList()
+                HomeSections.Favorites.title -> favoriteDrawingsList
                 else -> emptyList()
 
             }
                 SeeAllPage(
+                    viewModel = viewModel,
                     navController = navController,
                     title = title,
                     imagesList = imagesList

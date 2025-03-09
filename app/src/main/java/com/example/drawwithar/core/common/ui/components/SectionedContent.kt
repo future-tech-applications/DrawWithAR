@@ -25,25 +25,28 @@ fun SectionedContent(
     viewModel: HomeViewModel
 ) {
     val savedDrawingsList by viewModel.savedDrawingsList.collectAsState(initial = emptyList())
-    val favoriteDrawingsList by viewModel.favoriteDrawingsList.collectAsState(initial = emptyList())
+    //val favoriteDrawingsList by viewModel.favoriteDrawingsList.collectAsState(initial = emptyList())
     Column(
         modifier = Modifier
             .padding(padding)
             .verticalScroll(rememberScrollState())
     ) {
         HomePageDrawingsSection(
+            viewModel = viewModel,
             title = HomeSections.MyDrawings.title,
             navController = navController,
-            imagesList =  savedDrawingsList.reversed() // show latest first
+            imagesList =  savedDrawingsList.reversed(), // show latest first
+
         )
         Spacer(modifier = Modifier.height(16.dp))
         HomePageDrawingsSection(
+            viewModel = viewModel,
             title = HomeSections.Favorites.title,
             navController = navController,
-            imagesList = favoriteDrawingsList
         )
         Spacer(modifier = Modifier.height(16.dp))
         HomePageDrawingsSection(
+            viewModel = viewModel,
             title = HomeSections.Templates.title,
             navController = navController,
             imagesList = templates,

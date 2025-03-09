@@ -1,6 +1,8 @@
 package com.example.drawwithar.feature.homepage.uicomponent
 
 import android.net.Uri
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,17 +21,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.example.drawwithar.core.common.model.CustomToastData
 import com.example.drawwithar.core.common.sharedviewmodel.getSharedViewModel
 import com.example.drawwithar.core.common.ui.components.ColorConstants
+import com.example.drawwithar.core.common.ui.components.CustomToast
 import com.example.drawwithar.core.common.ui.components.HomePageSectionItemHolder
 import com.example.drawwithar.core.common.ui.components.HomeSections
 import com.example.drawwithar.core.common.ui.components.SquareAddButton
@@ -41,13 +52,18 @@ import com.example.drawwithar.util.ImageUtils
 
 @Composable
 fun HomePageDrawingsSection(
+    viewModel: HomeViewModel,
     navController: NavHostController,
     title: String = "",
     backgroundColor: Color = ColorConstants.HOME_SECTION_BACKGROUND,
     imagesList: List<Any> = emptyList()
 ) {
+    val context = LocalContext.current
+    var imagesListToDisplay: List<Any> = imagesList
+    val favoriteDrawingUris by viewModel.favoriteDrawingsList.collectAsState()
+
+    if (title == HomeSections.Favorites.title && favoriteDrawingUris.isNotEmpty()) imagesListToDisplay = favoriteDrawingUris
     val sharedViewModel = getSharedViewModel()
-    val viewModel =  hiltViewModel<HomeViewModel>()
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -71,7 +87,7 @@ fun HomePageDrawingsSection(
                 .height(150.dp)
                 .background(backgroundColor, RoundedCornerShape(8.dp))
         ) {
-            if (title == HomeSections.MyDrawings.title && imagesList.isEmpty()) {
+            if (title == HomeSections.MyDrawings.title && imagesListToDisplay.isEmpty()) {
                 SquareAddButton(
                     modifier = Modifier.align(Alignment.Center),
                     onClick = {
@@ -79,7 +95,7 @@ fun HomePageDrawingsSection(
                     }
                 )
             }
-            if (title == HomeSections.Favorites.title && imagesList.isEmpty()) {
+            if (title == HomeSections.Favorites.title && favoriteDrawingUris.isEmpty()) {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
                     text = "No items to display",
@@ -93,7 +109,7 @@ fun HomePageDrawingsSection(
                 contentPadding = PaddingValues(16.dp)
             ) {
                 // first static item to be displayed
-                if (title == HomeSections.MyDrawings.title && imagesList.isNotEmpty()) {
+                if (title == HomeSections.MyDrawings.title && imagesListToDisplay.isNotEmpty()) {
                     item {
                         HomePageSectionItemHolder(
                             onClick = {
@@ -114,17 +130,20 @@ fun HomePageDrawingsSection(
 
                 // list of items
                 // show only 8 items
-                val limitedList = imagesList.take(8)
+                val limitedList = imagesListToDisplay.take(8)
                 items(limitedList.size) { index ->
-                    val imageItem = imagesList[index]
+                    val isOpensInGallery = title == HomeSections.MyDrawings.title ||
+                            title == HomeSections.Favorites.title
+
+                    val imageItem = imagesListToDisplay[index]
                     val imageSrc = if (imageItem is Uri) {
-                        rememberAsyncImagePainter(model = imageItem as Uri)
+                        rememberAsyncImagePainter(model = imageItem)
                     } else {
                         painterResource(id = imageItem as Int)
                     }
                     HomePageSectionItemHolder(
                         onClick = {
-                            if (title == HomeSections.MyDrawings.title) {
+                            if (isOpensInGallery) {
                                 ImageUtils.openImageInGallery(navController.context, imageItem as Uri)
                             } else {
                                 // set selected image uri and navigate to drawing page
@@ -133,14 +152,24 @@ fun HomePageDrawingsSection(
                             }
                         },
                         itemSrc = imageItem,
-                        onFavoriteClick = {
-                            // add to favorite
-                            viewModel.insertDrawing(
-                                DrawingEntity(
-                                    uri = (imageItem as Uri).toString(),
-                                    isFavorite = true
-                                )
+                        isFavorited = isOpensInGallery && favoriteDrawingUris.contains(imageItem as Uri),
+                        onFavoriteClick = { src, isFavorite, isFromFavorite ->
+                            Log.d("onFavClick", "$src isFavorite: $isFavorite")
+                            val drawingEntity = DrawingEntity(
+                                uri = (src as Uri).toString(),
+                                isFavorite = isFavorite
+
                             )
+                            // add to favorite
+                            if(isFavorite && !isFromFavorite) {
+                                viewModel.insertDrawing(drawingEntity)
+                                Toast.makeText(context, "Added to Favorites", Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                viewModel.deleteDrawing(drawingEntity)
+                                Toast.makeText(context, "Removed from Favorites", Toast.LENGTH_SHORT).show()
+
+                            }
                         }
                     ) {
                         Image(
@@ -154,5 +183,6 @@ fun HomePageDrawingsSection(
             }
         }
     }
+
 
 }

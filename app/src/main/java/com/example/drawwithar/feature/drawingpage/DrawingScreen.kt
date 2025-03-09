@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -30,6 +31,9 @@ import com.example.drawwithar.core.common.ui.components.CustomToast
 import com.example.drawwithar.feature.drawingpage.navigation.DrawingScreenBackPressComposeHandler
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @ExperimentalCoilApi
 @ExperimentalCoroutinesApi
@@ -70,8 +74,9 @@ fun DrawingScreen(
     val toastData by viewModel.toastData.collectAsState()
 
     fun finishDrawing() {
-        sharedViewModel.toggleDrawing()
         viewModel.resetDrawingImageStates()
+        sharedViewModel.toggleDrawing()
+
     }
 
     Scaffold(
@@ -112,9 +117,9 @@ fun DrawingScreen(
                 title = "Confirm Exit",
                 text = "Are you sure you want to exit?",
                 onConfirm = {
+                    viewModel.updateExitConfirmDialogOpened(false)
                     navController.popBackStack()
                     finishDrawing()
-                    viewModel.updateExitConfirmDialogOpened(false)
                 },
                 onCancel = {
                     viewModel.updateExitConfirmDialogOpened(false)
@@ -129,8 +134,8 @@ fun DrawingScreen(
                 title = "Reset Changes",
                 text = "Any changes applied on drawing image will be reset. Are you sure resetting?",
                 onConfirm = {
-                    viewModel.resetDrawingImageStates()
                     viewModel.updateResetDrawingConfirmDialogOpened(false)
+                    viewModel.resetDrawingImageStates()
                 },
                 onCancel = {
                     viewModel.updateResetDrawingConfirmDialogOpened(false)

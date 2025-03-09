@@ -31,17 +31,21 @@ class HomeViewModel @Inject constructor(
 
 
 
-
     fun insertDrawing(drawing: DrawingEntity) {
         viewModelScope.launch {
             dao.insertDrawing(drawing)
         }
+        _favoriteDrawingsList.value += Uri.parse(drawing.uri)
+        updateFavoriteDrawingUris(_favoriteDrawingsList.value)
     }
 
     fun deleteDrawing(drawing: DrawingEntity) {
         viewModelScope.launch {
             dao.deleteDrawing(drawing)
         }
+        _favoriteDrawingsList.value -= Uri.parse(drawing.uri)
+        updateFavoriteDrawingUris(_favoriteDrawingsList.value)
+
     }
 
     fun fetchSavedImages(context: Context) {
@@ -58,4 +62,12 @@ class HomeViewModel @Inject constructor(
             _favoriteDrawingsList.emit(filterUris)
         }
     }
+
+    private fun updateFavoriteDrawingUris(newUris: List<Uri>) {
+        viewModelScope.launch {
+            _favoriteDrawingsList.emit(newUris)
+        }
+
+    }
+
 }
