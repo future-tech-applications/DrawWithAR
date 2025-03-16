@@ -94,7 +94,7 @@ fun SeeAllPage(
                                 .aspectRatio(1f)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(MaterialTheme.colorScheme.surface),
-                            isFavorited = favoriteDrawingUris.contains(imageItem as Uri),
+                            isFavorited = if(imageItem is Uri) favoriteDrawingUris.contains(imageItem) else false,
                             onClick = {
                                 if (title == HomeSections.MyDrawings.title) {
                                     ImageUtils.openImageInGallery(navController.context, imageItem as Uri)

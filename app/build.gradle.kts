@@ -8,6 +8,7 @@ plugins {
 
     // dagger hilt
     alias(libs.plugins.dagger.hilt)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -67,6 +68,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -97,6 +99,13 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // app update
+    implementation(libs.app.update)
+
+    // crashlytics
+//    implementation(libs.firebase.crashlytics)
+//    implementation(libs.firebase.analytics)
 
 
 
