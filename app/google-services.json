@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:777763972230:android:3d491f43a20e918db15d07",
+        "mobilesdk_app_id": "1:777763972230:android:f5ab51f50329f5afb15d07",
         "android_client_info": {
-          "package_name": "com.example.drawwithar"
+          "package_name": "com.avoforge.drawwithar"
         }
       },
       "oauth_client": [],

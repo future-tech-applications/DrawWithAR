@@ -10,6 +10,8 @@ class DrawWithARApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        //throw RuntimeException("Test Crash: This is a test crash for Firebase Crashlytics")
+
 
 //        // Initialize Firebase
 //        FirebaseApp.initializeApp(this)

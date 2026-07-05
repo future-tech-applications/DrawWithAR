@@ -9,6 +9,8 @@ plugins {
     // dagger hilt
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.google.gms.google.services)
+
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -16,10 +18,10 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.drawwithar"
+        applicationId = "com.avoforge.drawwithar"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -103,9 +105,12 @@ dependencies {
     // app update
     implementation(libs.app.update)
 
+    // Import the BoM for the Firebase platform
+    implementation (platform(libs.firebase.bom))
+    implementation(libs.google.firebase.crashlytics)
+    implementation (libs.firebase.crashlytics.ktx)
+
     // crashlytics
-//    implementation(libs.firebase.crashlytics)
-//    implementation(libs.firebase.analytics)
 
 
 
